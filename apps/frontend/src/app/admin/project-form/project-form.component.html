@@ -1,0 +1,90 @@
+<section class="admin-shell">
+  <a class="back-link" routerLink="/admin/projects">← Tous les projets</a>
+  <p class="eyebrow">Administration</p>
+  <h1>{{ projectId ? 'Modifier le projet' : 'Nouveau projet' }}</h1>
+
+  <form class="project-form" [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-grid">
+      <label class="field-wide">
+        Titre
+        <input formControlName="title" (blur)="suggestSlug()" />
+      </label>
+      <label class="field-wide">
+        Slug
+        <input formControlName="slug" />
+      </label>
+      <label class="field-wide">
+        Résumé
+        <textarea formControlName="summary" rows="3"></textarea>
+      </label>
+      <label class="field-wide">
+        Contenu Markdown
+        <textarea
+          class="editor"
+          formControlName="contentMarkdown"
+          rows="18"
+        ></textarea>
+      </label>
+      <label>
+        Statut
+        <select formControlName="status">
+          <option value="draft">Brouillon</option>
+          <option value="published">Publié</option>
+          <option value="archived">Archivé</option>
+        </select>
+      </label>
+      <label>
+        Catégorie
+        <input formControlName="category" />
+      </label>
+      <label class="field-wide">
+        URL de couverture
+        <input formControlName="coverUrl" type="url" />
+      </label>
+      <label>
+        Date de début
+        <input formControlName="startedAt" type="date" />
+      </label>
+      <label>
+        Date de fin
+        <input formControlName="endedAt" type="date" />
+      </label>
+      <label class="field-wide">
+        Tags, séparés par des virgules
+        <input formControlName="tags" placeholder="Angular, Design, Railway" />
+      </label>
+      <label class="field-wide">
+        Liens, un par ligne : libellé | URL | type
+        <textarea
+          formControlName="links"
+          rows="4"
+          placeholder="Voir le site | https://example.com | website"
+        ></textarea>
+      </label>
+    </div>
+
+    <div class="checkbox-row">
+      <label>
+        <input type="checkbox" formControlName="featured" />
+        Mettre en avant
+      </label>
+      <label>
+        <input type="checkbox" formControlName="published" />
+        Projet publié
+      </label>
+    </div>
+
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+
+    <div class="button-row">
+      <button class="button" type="submit" [disabled]="form.invalid || busy()">
+        {{ busy() ? 'Enregistrement…' : 'Enregistrer' }}
+      </button>
+      <a class="button button-secondary" routerLink="/admin/projects">
+        Annuler
+      </a>
+    </div>
+  </form>
+</section>

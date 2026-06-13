@@ -1,0 +1,42 @@
+<section class="hero page-shell">
+  <p class="eyebrow">Développeur et Tech lead</p>
+  <h1>
+    Je participe à la création d'outils informatiques aidant différents corps de
+    métiers dans leurs tâches quotidienne
+  </h1>
+  <p class="hero-copy">
+    Ce site rassemble mes projets persos, mes notes de travail et quelques idées
+    encore en train de prendre forme.
+  </p>
+  <a class="text-link" routerLink="/projets">Voir les projets →</a>
+</section>
+
+<section class="page-shell section">
+  <div class="section-heading">
+    <p class="eyebrow">Sélection</p>
+    <h2>Travaux récents</h2>
+  </div>
+
+  <div class="project-grid">
+    @for (project of featuredProjects$ | async; track project.id) {
+      <article class="project-card">
+        <p class="project-meta">
+          {{ project.category || 'Projet personnel' }}
+        </p>
+        <h3>
+          <a [routerLink]="['/projets', project.slug]">
+            {{ project.title }}
+          </a>
+        </h3>
+        <p>{{ project.summary }}</p>
+        <div class="tag-list">
+          @for (tag of project.tags; track tag.slug) {
+            <span>{{ tag.name }}</span>
+          }
+        </div>
+      </article>
+    } @empty {
+      <p class="muted">Les premiers projets arrivent bientôt.</p>
+    }
+  </div>
+</section>
