@@ -23,10 +23,10 @@
           </a>
         </h2>
         @if (project.lastCommitAt) {
-          <p class="project-activity">
-            Dernier commit le
-            {{ project.lastCommitAt | date: 'dd/MM/yyyy à HH:mm' }}
-          </p>
+          <app-project-activity
+            [date]="project.lastCommitAt"
+            [compact]="true"
+          />
         }
       </div>
       <p>{{ project.summary }}</p>

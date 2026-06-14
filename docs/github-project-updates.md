@@ -97,9 +97,13 @@ même si la proposition de note reste en attente.
 Le dépôt du Portfolio contient déjà
 `.github/workflows/portfolio-update.yml`. Il cible :
 
-- la branche `master` ;
+- la branche `master`, après la réussite du workflow `CI` ;
 - le projet `construire-ce-portfolio` ;
 - le dépôt `https://github.com/AloisGoeury/portfolio`.
+
+La notification attend jusqu'à dix minutes que Railway serve la nouvelle
+version. Cela évite d'appeler la route sur l'ancien déploiement pendant le
+build.
 
 Il reste à définir dans les paramètres GitHub du dépôt :
 

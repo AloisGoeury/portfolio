@@ -33,8 +33,8 @@ describe('ProjectsComponent', () => {
     const fixture = TestBed.createComponent(ProjectsComponent);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('Dernier commit le');
-    expect(fixture.nativeElement.textContent).toContain('14/06/2026');
+    expect(fixture.nativeElement.textContent).toContain('Dernière mise à jour');
+    expect(fixture.nativeElement.textContent).toContain('14 juin 2026');
   });
 
   it('shows an empty state when no project is published', async () => {
@@ -82,6 +82,8 @@ describe('ProjectsComponent', () => {
     const fixture = TestBed.createComponent(ProjectsComponent);
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Projet simple');
-    expect(fixture.nativeElement.textContent).not.toContain('Dernier commit');
+    expect(fixture.nativeElement.textContent).not.toContain(
+      'Dernière mise à jour',
+    );
   });
 });
