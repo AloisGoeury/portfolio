@@ -1,0 +1,71 @@
+<section class="admin-shell">
+  <div class="admin-heading">
+    <div>
+      <a class="back-link" routerLink="/admin/projects">← Projets</a>
+      <p class="eyebrow">Administration</p>
+      <h1>À propos</h1>
+    </div>
+    <a class="button button-secondary" routerLink="/a-propos"> Voir la page </a>
+  </div>
+
+  @if (current(); as page) {
+    <p class="muted">
+      Version {{ page.version }}, mise à jour le
+      {{ page.updatedAt | date: 'dd/MM/yyyy à HH:mm' }}
+    </p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-grid">
+      <label>
+        Surtitre
+        <input formControlName="eyebrow" />
+      </label>
+      <label class="field-wide">
+        Titre
+        <input formControlName="title" />
+      </label>
+      <label class="field-wide">
+        Contenu Markdown
+        <textarea
+          class="editor"
+          formControlName="bodyMarkdown"
+          rows="16"
+        ></textarea>
+      </label>
+      <label class="field-wide">
+        Libellé du lien vers les projets
+        <input formControlName="linkLabel" />
+      </label>
+    </div>
+
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+    @if (saved()) {
+      <p class="form-success">Nouvelle version enregistrée.</p>
+    }
+
+    <button class="button" type="submit" [disabled]="form.invalid || busy()">
+      {{ busy() ? 'Enregistrement…' : 'Enregistrer une nouvelle version' }}
+    </button>
+  </form>
+
+  <section class="history">
+    <p class="eyebrow">Historique</p>
+    <h2>Versions enregistrées</h2>
+    <div class="admin-list">
+      @for (version of history(); track version.version) {
+        <article>
+          <div>
+            <span class="status">Version {{ version.version }}</span>
+            <h3>{{ version.title }}</h3>
+            <p>
+              {{ version.updatedAt | date: 'dd/MM/yyyy à HH:mm' }}
+            </p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+</section>

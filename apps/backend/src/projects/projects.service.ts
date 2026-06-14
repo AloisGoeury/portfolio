@@ -22,6 +22,11 @@ export interface Project extends QueryResultRow {
   status: string;
   category: string | null;
   coverUrl: string | null;
+  githubRepositoryUrl: string | null;
+  lastCommitSha: string | null;
+  lastCommitUrl: string | null;
+  lastCommitMessage: string | null;
+  lastCommitAt: string | null;
   featured: boolean;
   published: boolean;
   startedAt: string | null;
@@ -75,6 +80,7 @@ export class ProjectsService {
           dto.status ?? (dto.published ? 'published' : 'draft'),
           dto.category ?? null,
           dto.coverUrl ?? null,
+          dto.githubRepositoryUrl ?? null,
           dto.featured ?? false,
           dto.published ?? false,
           dto.startedAt ?? null,
@@ -106,6 +112,10 @@ export class ProjectsService {
       status: dto.status ?? current.status,
       category: dto.category === undefined ? current.category : dto.category,
       coverUrl: dto.coverUrl === undefined ? current.coverUrl : dto.coverUrl,
+      githubRepositoryUrl:
+        dto.githubRepositoryUrl === undefined
+          ? current.githubRepositoryUrl
+          : dto.githubRepositoryUrl,
       featured: dto.featured ?? current.featured,
       published: dto.published ?? current.published,
       startedAt:
@@ -126,6 +136,7 @@ export class ProjectsService {
           next.status,
           next.category,
           next.coverUrl,
+          next.githubRepositoryUrl,
           next.featured,
           next.published,
           next.startedAt,

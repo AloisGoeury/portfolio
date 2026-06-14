@@ -8,12 +8,18 @@
 </section>
 
 <section class="page-shell note-list">
-  <article>
-    <time datetime="2026-06-13">13 juin 2026</time>
-    <h2>Commencer petit, laisser de la place</h2>
-    <p>
-      Le carnet sera bientôt alimenté. Pour l’instant, cette page marque
-      l’endroit où les idées viendront s’installer.
-    </p>
-  </article>
+  @for (note of notes$ | async; track note.id) {
+    <article>
+      <time [attr.datetime]="note.publishedAt || note.createdAt">
+        {{ note.publishedAt || note.createdAt | date: 'dd MMMM yyyy' }}
+      </time>
+      <h2>{{ note.title }}</h2>
+      @if (note.excerpt) {
+        <p>{{ note.excerpt }}</p>
+      }
+      <div class="prose note-content" [innerHTML]="note.html"></div>
+    </article>
+  } @empty {
+    <p class="empty-state">Aucune note publiée pour le moment.</p>
+  }
 </section>

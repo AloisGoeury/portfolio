@@ -1,20 +1,12 @@
-<section class="page-shell page-intro about-intro">
-  <p class="eyebrow">À propos</p>
-  <h1>Faire moins, mais le faire avec soin.</h1>
-  <div class="prose">
+@if (viewModel$ | async; as viewModel) {
+  <section class="page-shell page-intro about-intro">
+    <p class="eyebrow">{{ viewModel.page.eyebrow }}</p>
+    <h1>{{ viewModel.page.title }}</h1>
+    <div class="prose" [innerHTML]="viewModel.html"></div>
     <p>
-      Je suis un ingénieur devenu développeur et même tech lead. J'aime le code,
-      la tech, mais encore plus la gestion de projet et l'orchestration de tout
-      un projet web par exemple
+      <a class="text-link" routerLink="/projets">
+        {{ viewModel.page.linkLabel }}
+      </a>
     </p>
-    <p>
-      Mon travail se situe entre conception, prototypage et réalisation. Ce
-      portfolio est aussi un atelier : il me permet de tester de nouvelles
-      technologies sur différents projets, de tout répertorier en un endroit et
-      suivre tout ce travail.
-    </p>
-    <p>
-      <a class="text-link" routerLink="/projets"> Parcourir les projets → </a>
-    </p>
-  </div>
-</section>
+  </section>
+}

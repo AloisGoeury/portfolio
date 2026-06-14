@@ -44,4 +44,21 @@ describe('ProjectsApiService', () => {
     expect(request.request.body).toEqual({ published: true });
     request.flush({});
   });
+
+  it('uses the expected endpoints for project details and admin mutations', () => {
+    service.findPublished('portfolio').subscribe();
+    http.expectOne('/api/projects/portfolio').flush({});
+
+    service.listAdmin().subscribe();
+    http.expectOne('/api/admin/projects').flush([]);
+
+    service.findAdmin('project-id').subscribe();
+    http.expectOne('/api/admin/projects/project-id').flush({});
+
+    service.create({ title: 'Projet' } as never).subscribe();
+    http.expectOne('/api/admin/projects').flush({});
+
+    service.delete('project-id').subscribe();
+    http.expectOne('/api/admin/projects/project-id').flush(null);
+  });
 });

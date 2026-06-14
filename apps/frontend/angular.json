@@ -83,7 +83,13 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "buildTarget": "frontend:test-build:development",
-            "tsConfig": "tsconfig.spec.json"
+            "tsConfig": "tsconfig.spec.json",
+            "coverageThresholds": {
+              "statements": 85,
+              "branches": 90,
+              "functions": 65,
+              "lines": 80
+            }
           }
         }
       }

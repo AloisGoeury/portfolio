@@ -12,6 +12,7 @@
     "lint": "npm run lint --workspace @portfolio/frontend && npm run lint --workspace @portfolio/backend && prettier --check .",
     "lint:fix": "npm run lint:fix --workspace @portfolio/frontend && npm run lint:fix --workspace @portfolio/backend && prettier --write .",
     "test": "npm run test --workspace @portfolio/frontend && npm run test --workspace @portfolio/backend",
+    "test:coverage": "npm run test:coverage --workspace @portfolio/frontend && npm run test:coverage --workspace @portfolio/backend",
     "test:e2e": "npm run test:e2e --workspace @portfolio/backend",
     "test:ci": "npm run lint && npm run test && npm run test:e2e && npm run build",
     "db:migrate": "npm run db:migrate --workspace @portfolio/backend",

@@ -8,6 +8,7 @@
     "lint": "eslint \"src/**/*.{ts,html}\"",
     "lint:fix": "eslint \"src/**/*.{ts,html}\" --fix",
     "test": "ng test --no-watch --no-progress",
+    "test:coverage": "ng test --no-watch --no-progress --coverage",
     "test:watch": "ng test"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
     "@angular/build": "21.2.15",
     "@angular/cli": "21.2.15",
     "@angular/compiler-cli": "21.2.15",
+    "@vitest/coverage-v8": "4.1.8",
     "jsdom": "29.1.1",
     "typescript": "5.9.3",
     "vitest": "4.1.8"

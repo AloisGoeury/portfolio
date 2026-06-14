@@ -1,21 +1,28 @@
 import '../load-env';
 import bcrypt from 'bcrypt';
 import { DatabaseService } from './database.service';
+import { seedPageContent } from './seed-page-content';
 
-async function seedAdmin(): Promise<void> {
+async function seedDatabase(): Promise<void> {
   const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   const password = process.env.ADMIN_PASSWORD;
-
-  if (!email || !password) {
-    console.log(
-      'ADMIN_EMAIL or ADMIN_PASSWORD is missing; admin seed skipped.',
-    );
-    return;
-  }
-
   const database = new DatabaseService();
 
   try {
+    const pageCreated = await seedPageContent(database);
+    console.log(
+      pageCreated
+        ? 'Initial about page created.'
+        : 'About page already exists.',
+    );
+
+    if (!email || !password) {
+      console.log(
+        'ADMIN_EMAIL or ADMIN_PASSWORD is missing; admin seed skipped.',
+      );
+      return;
+    }
+
     const existing = await database.query<{ id: string }>(
       'SELECT id FROM users WHERE email = $1',
       [email],
@@ -38,7 +45,7 @@ async function seedAdmin(): Promise<void> {
   }
 }
 
-seedAdmin().catch((error: unknown) => {
+seedDatabase().catch((error: unknown) => {
   console.error(error);
   process.exitCode = 1;
 });

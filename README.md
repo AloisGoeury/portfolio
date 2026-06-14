@@ -129,15 +129,16 @@ Le runner lit les fichiers de
 `apps/backend/db/migrations` par ordre alphabétique. Chaque migration est
 exécutée dans une transaction et enregistrée dans `schema_migrations`.
 
-Créer le compte administrateur défini par `ADMIN_EMAIL` et `ADMIN_PASSWORD` :
+Créer le contenu initial de la page À propos et le compte administrateur défini
+par `ADMIN_EMAIL` et `ADMIN_PASSWORD` :
 
 ```bash
 npm run db:seed
 ```
 
-Le seed ne modifie rien si cet email existe déjà. La migration
-`002_seed_example_project.sql` ajoute également un projet publié uniquement si
-la table `projects` est vide.
+Le seed ne remplace jamais une page À propos déjà présente et ne modifie pas le
+compte si cet email existe déjà. La migration `002_seed_example_project.sql`
+ajoute également un projet publié uniquement si la table `projects` est vide.
 
 ## Développement
 
@@ -171,17 +172,25 @@ Lancer les tests unitaires Angular et NestJS :
 npm run test
 ```
 
+Generer les rapports de couverture dans `coverage/` :
+
+```bash
+npm run test:coverage
+```
+
 Les tests d'intégration API utilisent une vraie base PostgreSQL. Utilisez une
 base dédiée, car la suite vide ses tables avant les scénarios :
 
 ```bash
 createdb portfolio_test
 DATABASE_URL="postgresql://localhost:5432/portfolio_test" \
+DATABASE_SSL="false" \
 JWT_SECRET="test-secret" \
 NODE_ENV="test" \
 npm run db:migrate
 
 DATABASE_URL="postgresql://localhost:5432/portfolio_test" \
+DATABASE_SSL="false" \
 JWT_SECRET="test-secret" \
 NODE_ENV="test" \
 npm run test:e2e
@@ -224,6 +233,9 @@ Routes publiques :
 - `POST /api/auth/login`
 - `GET /api/projects`
 - `GET /api/projects/:slug`
+- `GET /api/notes`
+- `GET /api/pages/about`
+- `POST /api/integrations/github/project-updates`
 
 Routes protégées par un JWT administrateur :
 
@@ -232,105 +244,31 @@ Routes protégées par un JWT administrateur :
 - `POST /api/admin/projects`
 - `PATCH /api/admin/projects/:id`
 - `DELETE /api/admin/projects/:id`
+- `GET /api/admin/notes`
+- `POST /api/admin/notes`
+- `PATCH /api/admin/notes/:id`
+- `DELETE /api/admin/notes/:id`
+- `GET /api/admin/project-updates`
+- `PATCH /api/admin/project-updates/:id`
+- `POST /api/admin/project-updates/:id/publish`
+- `POST /api/admin/project-updates/:id/ignore`
+
+## Synchronisation GitHub
+
+Un projet du CMS peut être lié à un dépôt GitHub. À chaque push, une GitHub
+Action peut mettre à jour la date du dernier commit et préparer une note dans
+une file de modération, sans publication automatique.
+
+Le guide complet et le workflow réutilisable sont dans
+[`docs/github-project-updates.md`](docs/github-project-updates.md). L'API
+entrante est protégée par la variable Railway `GITHUB_UPDATES_SECRET`.
+
+- `GET /api/admin/pages/about`
+- `GET /api/admin/pages/about/history`
+- `PATCH /api/admin/pages/about`
 
 Les deux routes publiques projets filtrent systématiquement
 `published = true` dans le SQL.
-
-## Déploiement Railway
-
-### 1. Publier le dépôt sur GitHub
-
-Le dépôt doit contenir le `package-lock.json`, le dossier `.github` et
-`railway.json`. Poussez ensuite la branche `main` sur GitHub et attendez que la
-GitHub Action soit verte.
-
-### 2. Créer le projet Railway
-
-1. Dans Railway, choisissez **New Project** puis **Deploy from GitHub repo**.
-2. Autorisez Railway à accéder au dépôt si nécessaire.
-3. Sélectionnez ce dépôt.
-4. Conservez la racine du dépôt comme **Root Directory**. Ne choisissez pas
-   `apps/backend`, car le build a besoin des deux workspaces.
-
-Railway détecte `railway.json`. Ce fichier demande à Railpack :
-
-- `npm run build` pendant le build ;
-- `npm run db:migrate && npm run db:seed` avant chaque déploiement ;
-- `npm run start` pour démarrer NestJS ;
-- `/api/health` comme healthcheck.
-
-Aucun Dockerfile n'est nécessaire.
-
-### 3. Ajouter PostgreSQL
-
-Dans le canvas du même projet, cliquez sur **+ New**, puis
-**Database → PostgreSQL**. Railway crée un second service, généralement nommé
-`Postgres`, qui expose notamment une variable `DATABASE_URL`.
-
-### 4. Configurer les variables de l'application
-
-Ouvrez le service applicatif, puis l'onglet **Variables**. Ajoutez :
-
-```dotenv
-DATABASE_URL=${{Postgres.DATABASE_URL}}
-JWT_SECRET=une-longue-valeur-aleatoire
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=un-mot-de-passe-solide
-NODE_ENV=production
-```
-
-Le nom `Postgres` dans la référence doit correspondre exactement au nom du
-service de base. L'interface Railway propose aussi cette référence dans son
-menu d'autocomplétion.
-
-Générez par exemple le secret JWT localement :
-
-```bash
-openssl rand -base64 48
-```
-
-N'ajoutez pas `PORT` : Railway le fournit automatiquement et NestJS l'utilise
-déjà. Vous pouvez sceller `JWT_SECRET` et `ADMIN_PASSWORD` depuis le menu de
-chaque variable.
-
-### 5. Déployer et vérifier
-
-Appliquez les changements Railway ou lancez **Deploy Latest Commit**. Pendant
-le premier déploiement :
-
-1. Angular et NestJS sont compilés ;
-2. les migrations créent les tables et le projet d'exemple ;
-3. le seed crée le compte administrateur ;
-4. Railway démarre l'application et attend un HTTP 200 sur `/api/health`.
-
-Dans les logs, vérifiez les lignes `Applied 001_init.sql`,
-`Applied 002_seed_example_project.sql` et `Admin ... created`. Lors des
-déploiements suivants, les migrations seront marquées `Skipping`.
-
-### 6. Créer le domaine public
-
-Dans **Settings → Networking**, choisissez **Generate Domain**. Testez ensuite :
-
-- `https://votre-domaine.up.railway.app/api/health` ;
-- `https://votre-domaine.up.railway.app/` ;
-- `https://votre-domaine.up.railway.app/admin/login`.
-
-Connectez-vous avec `ADMIN_EMAIL` et `ADMIN_PASSWORD`, puis changez idéalement
-le mot de passe initial en mettant à jour le hash en base ou en ajoutant une
-fonction de changement de mot de passe avant une utilisation plus large.
-
-### 7. Attendre la CI avant les prochains déploiements
-
-Dans les réglages GitHub du service Railway, activez **Wait for CI**. Railway
-attendra alors la réussite du workflow GitHub Actions avant de déployer un push
-sur `main`. Si un job échoue, le déploiement correspondant sera ignoré.
-
-Documentation Railway utile :
-
-- [PostgreSQL](https://docs.railway.com/databases/postgresql)
-- [Variables de référence](https://docs.railway.com/variables#reference-variables)
-- [GitHub autodeploys et Wait for CI](https://docs.railway.com/deployments/github-autodeploys#wait-for-ci)
-- [Healthchecks](https://docs.railway.com/deployments/healthchecks)
 
 ## Architecture
 
@@ -343,6 +281,7 @@ Documentation Railway utile :
 │   │       ├── auth            # login et garde JWT
 │   │       ├── database        # Pool pg, migrations et seed
 │   │       ├── health          # endpoint de santé
+│   │       ├── pages           # contenu courant et historique des pages
 │   │       └── projects        # contrôleurs, DTO, service et SQL
 │   └── frontend
 │       └── src/app
@@ -355,5 +294,5 @@ Documentation Railway utile :
 └── railway.json
 ```
 
-La partie publique est majoritairement statique. Seuls la liste et le détail
-des projets utilisent actuellement PostgreSQL.
+La liste et le détail des projets ainsi que la page À propos utilisent
+PostgreSQL.

@@ -51,6 +51,15 @@ export const routes: Routes = [
     title: 'Connexion — Portfolio',
   },
   {
+    path: 'admin/about',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/about-form/about-form.component').then(
+        (module) => module.AboutFormComponent,
+      ),
+    title: 'Modifier la page À propos',
+  },
+  {
     path: 'admin/projects',
     canActivate: [authGuard],
     loadComponent: () =>
@@ -58,6 +67,42 @@ export const routes: Routes = [
         (module) => module.AdminProjectsComponent,
       ),
     title: 'Administration des projets',
+  },
+  {
+    path: 'admin/notes',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/admin-notes/admin-notes.component').then(
+        (module) => module.AdminNotesComponent,
+      ),
+    title: 'Administration des notes',
+  },
+  {
+    path: 'admin/notes/new',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/note-form/note-form.component').then(
+        (module) => module.NoteFormComponent,
+      ),
+    title: 'Nouvelle note',
+  },
+  {
+    path: 'admin/notes/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/note-form/note-form.component').then(
+        (module) => module.NoteFormComponent,
+      ),
+    title: 'Modifier la note',
+  },
+  {
+    path: 'admin/project-updates',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/project-updates/project-updates.component').then(
+        (module) => module.ProjectUpdatesComponent,
+      ),
+    title: 'File des mises à jour GitHub',
   },
   {
     path: 'admin/projects/new',
@@ -76,6 +121,10 @@ export const routes: Routes = [
         (module) => module.ProjectFormComponent,
       ),
     title: 'Modifier le projet',
+  },
+  {
+    path: 'admin/**',
+    redirectTo: 'admin/login',
   },
   {
     path: '**',

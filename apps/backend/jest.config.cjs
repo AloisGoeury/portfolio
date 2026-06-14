@@ -14,4 +14,12 @@ module.exports = {
     '!src/database/seed-admin.ts',
   ],
   coverageDirectory: '../../coverage/backend',
+  coverageThreshold: {
+    global: {
+      statements: 30,
+      branches: 30,
+      functions: 30,
+      lines: 30,
+    },
+  },
 };

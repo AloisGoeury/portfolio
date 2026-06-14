@@ -11,6 +11,24 @@
           <span>{{ tag.name }}</span>
         }
       </div>
+
+      @if (viewModel.project.lastCommitAt) {
+        <div class="project-activity">
+          <p>
+            Dernière mise à jour le
+            {{ viewModel.project.lastCommitAt | date: 'dd/MM/yyyy à HH:mm' }}
+          </p>
+          @if (viewModel.project.lastCommitUrl) {
+            <a
+              [href]="viewModel.project.lastCommitUrl"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {{ viewModel.project.lastCommitMessage || 'Voir le commit' }} ↗
+            </a>
+          }
+        </div>
+      }
     </header>
 
     @if (viewModel.project.coverUrl) {

@@ -5,3 +5,4 @@ apps/backend/public
 apps/frontend/.angular
 coverage
 package-lock.json
+.vscode
