@@ -1,9 +1,20 @@
-import 'dotenv/config';
+import '../load-env';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { DatabaseService } from './database.service';
 
 async function runMigrations(): Promise<void> {
+  const databaseUrl = process.env.DATABASE_URL;
+
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL is missing.');
+  }
+
+  const target = new URL(databaseUrl);
+  console.log(
+    `Migration target: ${target.hostname}:${target.port || '5432'}${target.pathname}`,
+  );
+
   const database = new DatabaseService();
   const migrationsDirectory = join(__dirname, '..', '..', 'db', 'migrations');
 

@@ -40,6 +40,83 @@ DATABASE_URL="postgresql://localhost:5432/portfolio"
 Si votre serveur PostgreSQL exige un utilisateur et un mot de passe, utilisez
 la forme complète montrée dans `.env.example`.
 
+## Base Railway pour le développement local
+
+Le frontend et l'API peuvent tourner sur votre machine tout en utilisant une
+base PostgreSQL hébergée sur Railway. Cette base doit être distincte de la base
+de production.
+
+### 1. Créer l'environnement Railway
+
+Dans le projet Railway :
+
+1. Ouvrez le sélecteur d'environnement puis choisissez **New Environment**.
+2. Créez un environnement persistant nommé `development`.
+3. Choisissez de préférence **Empty Environment**, puis ajoutez uniquement un
+   service **Database → PostgreSQL**. Cela évite de déployer une seconde copie
+   inutile de l'application.
+4. Ouvrez le service PostgreSQL et vérifiez que son TCP Proxy public est actif.
+
+Railway fournit deux URL différentes :
+
+- `DATABASE_URL` utilise généralement le réseau privé Railway et convient aux
+  services déployés sur Railway ;
+- `DATABASE_PUBLIC_URL` passe par le proxy TCP public et doit être utilisée par
+  l'API lancée sur votre machine.
+
+Ne connectez jamais le développement local à la base de production.
+
+### 2. Configurer le projet local
+
+Copiez `.env.example` vers `.env`, puis utilisez les variables du service
+PostgreSQL de l'environnement `development` :
+
+```dotenv
+DATABASE_URL="valeur de DATABASE_PUBLIC_URL dans Railway"
+DATABASE_SSL="true"
+JWT_SECRET="un-secret-local"
+ADMIN_EMAIL="admin-dev@example.com"
+ADMIN_PASSWORD="un-mot-de-passe-de-dev"
+NODE_ENV="development"
+```
+
+Le fichier `.env` est ignoré par Git et ne doit jamais être commité.
+
+### 3. Initialiser et utiliser la base
+
+Une seule fois lors de la création de la base :
+
+```bash
+npm run db:migrate
+npm run db:seed
+```
+
+Puis lancez normalement le projet :
+
+```bash
+npm run dev
+```
+
+Les migrations peuvent être relancées après l'ajout d'un fichier SQL : celles
+déjà appliquées sont ignorées. La latence sera un peu supérieure à celle d'une
+base locale, car chaque requête traverse Internet.
+
+### Variante avec le CLI Railway
+
+Le CLI est utile pour sélectionner rapidement le bon projet et le bon
+environnement :
+
+```bash
+railway login
+railway link
+railway environment development
+```
+
+Pour le développement quotidien, conserver `DATABASE_PUBLIC_URL` dans le
+fichier `.env` local reste le fonctionnement le plus explicite. La commande
+`railway run` peut injecter les variables d'un service, mais il faut alors
+veiller à ne pas récupérer celles de `production`.
+
 ## Migrations et seed
 
 Exécuter les migrations SQL :
