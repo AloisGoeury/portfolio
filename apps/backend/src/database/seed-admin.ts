@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import '../load-env';
 import bcrypt from 'bcrypt';
 import { DatabaseService } from './database.service';
 

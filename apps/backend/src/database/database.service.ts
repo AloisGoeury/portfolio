@@ -5,12 +5,13 @@ export type DatabaseClient = Pick<PoolClient, 'query'>;
 
 @Injectable()
 export class DatabaseService implements OnModuleDestroy {
+  private readonly useSsl =
+    process.env.DATABASE_SSL === 'true' ||
+    process.env.NODE_ENV === 'production';
+
   private readonly pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl:
-      process.env.NODE_ENV === 'production'
-        ? { rejectUnauthorized: false }
-        : undefined,
+    ssl: this.useSsl ? { rejectUnauthorized: false } : undefined,
   });
 
   query<T extends QueryResultRow>(
