@@ -20,6 +20,11 @@ export interface Project {
   status: string;
   category: string | null;
   coverUrl: string | null;
+  githubRepositoryUrl: string | null;
+  lastCommitSha: string | null;
+  lastCommitUrl: string | null;
+  lastCommitMessage: string | null;
+  lastCommitAt: string | null;
   featured: boolean;
   published: boolean;
   startedAt: string | null;
@@ -30,4 +35,13 @@ export interface Project {
   links: ProjectLink[];
 }
 
-export type ProjectPayload = Omit<Project, 'id' | 'createdAt' | 'updatedAt'>;
+export type ProjectPayload = Omit<
+  Project,
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'lastCommitSha'
+  | 'lastCommitUrl'
+  | 'lastCommitMessage'
+  | 'lastCommitAt'
+>;

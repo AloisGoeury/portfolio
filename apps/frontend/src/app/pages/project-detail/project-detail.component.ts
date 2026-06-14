@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { marked } from 'marked';
@@ -6,7 +6,7 @@ import { from, map, switchMap } from 'rxjs';
 import { ProjectsApiService } from '../../core/projects-api.service';
 
 @Component({
-  imports: [AsyncPipe, RouterLink],
+  imports: [AsyncPipe, DatePipe, RouterLink],
   templateUrl: './project-detail.component.html',
 })
 export class ProjectDetailComponent {

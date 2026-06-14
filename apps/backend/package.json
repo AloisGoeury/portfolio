@@ -9,6 +9,7 @@
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest --config jest.config.cjs --runInBand",
+    "test:coverage": "jest --config jest.config.cjs --runInBand --coverage",
     "test:watch": "jest --config jest.config.cjs --watch",
     "test:e2e": "jest --config test/jest-e2e.config.cjs --runInBand",
     "db:migrate": "tsx src/database/run-migrations.ts",

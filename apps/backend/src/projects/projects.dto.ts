@@ -71,6 +71,10 @@ export class CreateProjectDto {
   coverUrl?: string | null;
 
   @IsOptional()
+  @IsUrl({ require_protocol: true })
+  githubRepositoryUrl?: string | null;
+
+  @IsOptional()
   @IsBoolean()
   featured?: boolean;
 

@@ -7,6 +7,11 @@ const PROJECT_FIELDS = `
   p.status,
   p.category,
   p.cover_url AS "coverUrl",
+  p.github_repository_url AS "githubRepositoryUrl",
+  p.last_commit_sha AS "lastCommitSha",
+  p.last_commit_url AS "lastCommitUrl",
+  p.last_commit_message AS "lastCommitMessage",
+  p.last_commit_at AS "lastCommitAt",
   p.featured,
   p.published,
   to_char(p.started_at, 'YYYY-MM-DD') AS "startedAt",
@@ -69,9 +74,9 @@ export const projectsSql = {
   create: `
     INSERT INTO projects (
       title, slug, summary, content_markdown, status, category, cover_url,
-      featured, published, started_at, ended_at
+      github_repository_url, featured, published, started_at, ended_at
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING id
   `,
   update: `
@@ -83,10 +88,11 @@ export const projectsSql = {
         status = $6,
         category = $7,
         cover_url = $8,
-        featured = $9,
-        published = $10,
-        started_at = $11,
-        ended_at = $12,
+        github_repository_url = $9,
+        featured = $10,
+        published = $11,
+        started_at = $12,
+        ended_at = $13,
         updated_at = now()
     WHERE id = $1
   `,

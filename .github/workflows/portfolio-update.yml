@@ -1,0 +1,71 @@
+name: Update portfolio activity
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-update-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  notify:
+    name: Notify portfolio
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Send the latest commit to the portfolio
+        env:
+          API_URL: ${{ vars.PORTFOLIO_API_URL }}
+          UPDATE_SECRET: ${{ secrets.PORTFOLIO_UPDATES_SECRET }}
+          PROJECT_SLUG: construire-ce-portfolio
+          REPOSITORY_URL: https://github.com/${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$API_URL" ] || [ -z "$UPDATE_SECRET" ]; then
+            echo "PORTFOLIO_API_URL and PORTFOLIO_UPDATES_SECRET are required."
+            exit 1
+          fi
+
+          COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+          COMMITTED_AT="$(git log -1 --pretty=%cI)"
+          AUTHOR_NAME="$(git log -1 --pretty=%an)"
+
+          jq -n \
+            --arg projectSlug "$PROJECT_SLUG" \
+            --arg repositoryUrl "$REPOSITORY_URL" \
+            --arg commitSha "$COMMIT_SHA" \
+            --arg commitUrl "$COMMIT_URL" \
+            --arg commitMessage "$COMMIT_MESSAGE" \
+            --arg committedAt "$COMMITTED_AT" \
+            --arg authorName "$AUTHOR_NAME" \
+            '{
+              projectSlug: $projectSlug,
+              repositoryUrl: $repositoryUrl,
+              commitSha: $commitSha,
+              commitUrl: $commitUrl,
+              commitMessage: $commitMessage,
+              committedAt: $committedAt,
+              authorName: $authorName
+            }' |
+          curl --fail-with-body \
+            --retry 5 \
+            --retry-all-errors \
+            --retry-delay 15 \
+            --request POST \
+            --header "Authorization: Bearer $UPDATE_SECRET" \
+            --header "Content-Type: application/json" \
+            --data-binary @- \
+            "${API_URL%/}/api/integrations/github/project-updates"
