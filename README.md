@@ -201,12 +201,48 @@ d'intégration et build. Elle suppose que `DATABASE_URL` pointe vers une base de
 test déjà migrée.
 
 Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) s'exécute
-sur chaque pull request et chaque push sur `main`. Il contient quatre jobs :
+sur chaque pull request et chaque push sur `master`. Il contient quatre jobs :
 
 - lint et formatage ;
 - tests unitaires frontend et backend ;
 - migrations, seed et tests d'intégration avec PostgreSQL 16 ;
 - build de production du monorepo.
+
+## Déploiements versionnés
+
+Un push sur la branche de production ne peut être déployé que si le titre du
+dernier commit correspond exactement à :
+
+```text
+portfolio-x.x.x
+```
+
+La valeur `x.x.x` doit être identique au champ `version` du `package.json`
+racine. Avec la version actuelle `1.0.0`, le titre attendu est donc :
+
+```text
+portfolio-1.0.0
+```
+
+Tout texte supplémentaire dans le titre ou toute autre version bloque le
+déploiement. Le corps du commit peut contenir des détails. C'est le titre du
+commit présent sur `master` après le merge qui est vérifié ; avec un squash
+merge, le titre du commit squash doit donc respecter ce format.
+
+La commande suivante permet de vérifier le commit courant localement :
+
+```bash
+npm run deploy:check
+```
+
+Le workflow
+[`deployment-gate.yml`](.github/workflows/deployment-gate.yml) applique cette
+règle sur GitHub. Dans les paramètres du service Railway, l'option
+**Wait for CI** doit être activée : Railway ignore alors le déploiement si cette
+vérification échoue. La branche de déploiement Railway doit être `master`,
+comme les workflows du dépôt. Le `buildCommand` de `railway.json` exécute
+également le contrôle avec le message fourni par Railway, afin de bloquer un
+build lancé sans cette protection GitHub.
 
 ## Build et lancement local
 
