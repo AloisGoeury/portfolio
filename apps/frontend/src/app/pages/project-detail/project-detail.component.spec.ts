@@ -132,6 +132,8 @@ describe('ProjectDetailComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Voir le commit');
+    expect(fixture.nativeElement.textContent).toContain(
+      'Voir le dernier commit',
+    );
   });
 });

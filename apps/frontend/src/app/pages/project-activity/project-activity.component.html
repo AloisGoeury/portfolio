@@ -1,0 +1,15 @@
+<aside class="activity" [class.activity-compact]="compact()">
+  <span class="activity-dot" aria-hidden="true"></span>
+  <div>
+    <p class="activity-label">Dernière mise à jour</p>
+    <time [attr.datetime]="date()">
+      {{ date() | date: "dd MMMM yyyy 'à' HH:mm" }}
+    </time>
+
+    @if (!compact() && commitUrl()) {
+      <a [href]="commitUrl()" target="_blank" rel="noreferrer">
+        {{ commitMessage() || 'Voir le dernier commit' }} ↗
+      </a>
+    }
+  </div>
+</aside>

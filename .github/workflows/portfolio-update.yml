@@ -1,9 +1,11 @@
 name: Update portfolio activity
 
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -16,11 +18,18 @@ concurrency:
 jobs:
   notify:
     name: Notify portfolio
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'master'
+      )
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           fetch-depth: 1
 
       - name: Send the latest commit to the portfolio
@@ -29,8 +38,8 @@ jobs:
           UPDATE_SECRET: ${{ secrets.PORTFOLIO_UPDATES_SECRET }}
           PROJECT_SLUG: construire-ce-portfolio
           REPOSITORY_URL: https://github.com/${{ github.repository }}
-          COMMIT_SHA: ${{ github.sha }}
-          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
           set -euo pipefail
 
@@ -59,13 +68,48 @@ jobs:
               commitMessage: $commitMessage,
               committedAt: $committedAt,
               authorName: $authorName
-            }' |
-          curl --fail-with-body \
-            --retry 5 \
-            --retry-all-errors \
-            --retry-delay 15 \
-            --request POST \
-            --header "Authorization: Bearer $UPDATE_SECRET" \
-            --header "Content-Type: application/json" \
-            --data-binary @- \
-            "${API_URL%/}/api/integrations/github/project-updates"
+            }' > portfolio-update.json
+
+          endpoint="${API_URL%/}/api/integrations/github/project-updates"
+
+          for attempt in $(seq 1 40); do
+            if ! status="$(
+              curl --silent --show-error \
+                  --output response.json \
+                  --write-out "%{http_code}" \
+                  --request POST \
+                  --header "Authorization: Bearer $UPDATE_SECRET" \
+                  --header "Content-Type: application/json" \
+                  --data-binary @portfolio-update.json \
+                  "$endpoint"
+            )"; then
+              status="000"
+            fi
+
+            if [ "$status" -ge 200 ] && [ "$status" -lt 300 ]; then
+              cat response.json
+              echo
+              echo "Portfolio update accepted."
+              exit 0
+            fi
+
+            if [ "$status" = "000" ] ||
+              [ "$status" = "404" ] ||
+              [ "$status" = "502" ] ||
+              [ "$status" = "503" ] ||
+              [ "$status" = "504" ]; then
+              echo "Portfolio deployment not ready (HTTP $status), attempt $attempt/40."
+              sleep 15
+              continue
+            fi
+
+            cat response.json
+            echo
+            echo "Portfolio update rejected with HTTP $status."
+            exit 1
+          done
+
+          cat response.json
+          echo
+          echo "The portfolio route was not available after 10 minutes."
+          exit 1
