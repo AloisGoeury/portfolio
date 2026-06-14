@@ -1,46 +1,49 @@
 @if (viewModel$ | async; as viewModel) {
-  <article>
-    <header class="page-shell project-header">
-      <a class="back-link" routerLink="/projets">← Tous les projets</a>
-      <p class="eyebrow">{{ viewModel.project.category || 'Projet' }}</p>
-      <h1>{{ viewModel.project.title }}</h1>
-      <p class="project-lead">{{ viewModel.project.summary }}</p>
+    <article>
+        <header class="page-shell project-header">
+            <a class="back-link" routerLink="/projets">← Tous les projets</a>
+            <p class="eyebrow">{{ viewModel.project.category || 'Projet' }}</p>
+            <h1>{{ viewModel.project.title }}</h1>
+            <p class="project-lead">{{ viewModel.project.summary }}</p>
 
-      <div class="tag-list">
-        @for (tag of viewModel.project.tags; track tag.slug) {
-          <span>{{ tag.name }}</span>
+            <div class="tag-list">
+                @for (tag of viewModel.project.tags; track tag.slug) {
+                    <span>{{ tag.name }}</span>
+                }
+            </div>
+
+            @if (viewModel.project.lastCommitAt) {
+                <app-project-activity
+                    [date]="viewModel.project.lastCommitAt"
+                    [commitUrl]="viewModel.project.lastCommitUrl"
+                    [commitMessage]="viewModel.project.lastCommitMessage"
+                />
+            }
+        </header>
+
+        @if (viewModel.project.coverUrl) {
+            <figure class="cover">
+                <img
+                    [src]="viewModel.project.coverUrl"
+                    [alt]="'Illustration du projet ' + viewModel.project.title"
+                />
+            </figure>
         }
-      </div>
 
-      @if (viewModel.project.lastCommitAt) {
-        <app-project-activity
-          [date]="viewModel.project.lastCommitAt"
-          [commitUrl]="viewModel.project.lastCommitUrl"
-          [commitMessage]="viewModel.project.lastCommitMessage"
-        />
-      }
-    </header>
+        <div class="page-shell prose" [innerHTML]="viewModel.html"></div>
 
-    @if (viewModel.project.coverUrl) {
-      <figure class="cover">
-        <img
-          [src]="viewModel.project.coverUrl"
-          [alt]="'Illustration du projet ' + viewModel.project.title"
-        />
-      </figure>
-    }
-
-    <div class="page-shell prose" [innerHTML]="viewModel.html"></div>
-
-    @if (viewModel.project.links.length) {
-      <aside class="page-shell project-links">
-        <p class="eyebrow">Liens</p>
-        @for (link of viewModel.project.links; track link.id || link.url) {
-          <a [href]="link.url" target="_blank" rel="noreferrer">
-            {{ link.label }} ↗
-          </a>
+        @if (viewModel.project.links.length) {
+            <aside class="page-shell project-links">
+                <p class="eyebrow">Liens</p>
+                @for (
+                    link of viewModel.project.links;
+                    track link.id || link.url
+                ) {
+                    <a [href]="link.url" target="_blank" rel="noreferrer">
+                        {{ link.label }} ↗
+                    </a>
+                }
+            </aside>
         }
-      </aside>
-    }
-  </article>
+    </article>
 }

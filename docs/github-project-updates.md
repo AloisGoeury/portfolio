@@ -32,50 +32,50 @@ Ajoutez ensuite `.github/workflows/portfolio-update.yml` :
 name: Notify portfolio
 
 on:
-  push:
-    branches: [main]
+    push:
+        branches: [main]
 
 jobs:
-  notify:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Send the latest commit to the portfolio
-        env:
-          API_URL: ${{ vars.PORTFOLIO_API_URL }}
-          PROJECT_SLUG: ${{ vars.PORTFOLIO_PROJECT_SLUG }}
-          UPDATE_SECRET: ${{ secrets.PORTFOLIO_UPDATES_SECRET }}
-          REPOSITORY_URL: https://github.com/${{ github.repository }}
-          COMMIT_SHA: ${{ github.sha }}
-          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-          COMMITTED_AT: ${{ github.event.head_commit.timestamp }}
-          AUTHOR_NAME: ${{ github.event.head_commit.author.name }}
-        run: |
-          jq -n \
-            --arg projectSlug "$PROJECT_SLUG" \
-            --arg repositoryUrl "$REPOSITORY_URL" \
-            --arg commitSha "$COMMIT_SHA" \
-            --arg commitUrl "$COMMIT_URL" \
-            --arg commitMessage "$COMMIT_MESSAGE" \
-            --arg committedAt "$COMMITTED_AT" \
-            --arg authorName "$AUTHOR_NAME" \
-            '{
-              projectSlug: $projectSlug,
-              repositoryUrl: $repositoryUrl,
-              commitSha: $commitSha,
-              commitUrl: $commitUrl,
-              commitMessage: $commitMessage,
-              committedAt: $committedAt,
-              authorName: $authorName
-            }' |
-          curl --fail-with-body \
-            --request POST \
-            --header "Authorization: Bearer $UPDATE_SECRET" \
-            --header "Content-Type: application/json" \
-            --data-binary @- \
-            "$API_URL/api/integrations/github/project-updates"
+    notify:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - name: Send the latest commit to the portfolio
+              env:
+                  API_URL: ${{ vars.PORTFOLIO_API_URL }}
+                  PROJECT_SLUG: ${{ vars.PORTFOLIO_PROJECT_SLUG }}
+                  UPDATE_SECRET: ${{ secrets.PORTFOLIO_UPDATES_SECRET }}
+                  REPOSITORY_URL: https://github.com/${{ github.repository }}
+                  COMMIT_SHA: ${{ github.sha }}
+                  COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+                  COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+                  COMMITTED_AT: ${{ github.event.head_commit.timestamp }}
+                  AUTHOR_NAME: ${{ github.event.head_commit.author.name }}
+              run: |
+                  jq -n \
+                    --arg projectSlug "$PROJECT_SLUG" \
+                    --arg repositoryUrl "$REPOSITORY_URL" \
+                    --arg commitSha "$COMMIT_SHA" \
+                    --arg commitUrl "$COMMIT_URL" \
+                    --arg commitMessage "$COMMIT_MESSAGE" \
+                    --arg committedAt "$COMMITTED_AT" \
+                    --arg authorName "$AUTHOR_NAME" \
+                    '{
+                      projectSlug: $projectSlug,
+                      repositoryUrl: $repositoryUrl,
+                      commitSha: $commitSha,
+                      commitUrl: $commitUrl,
+                      commitMessage: $commitMessage,
+                      committedAt: $committedAt,
+                      authorName: $authorName
+                    }' |
+                  curl --fail-with-body \
+                    --request POST \
+                    --header "Authorization: Bearer $UPDATE_SECRET" \
+                    --header "Content-Type: application/json" \
+                    --data-binary @- \
+                    "$API_URL/api/integrations/github/project-updates"
 ```
 
 Le couple projet/SHA est idempotent : relancer un workflow ne crée pas deux

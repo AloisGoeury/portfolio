@@ -1,38 +1,39 @@
 <section class="page-shell page-intro">
-  <p class="eyebrow">Portfolio</p>
-  <h1>Projets</h1>
-  <p>
-    Une sélection des projets que j'ai pu lancer, des expérimentation que j'ai
-    pu faire, avec un regard sur le processus autant que sur le résultat.
-  </p>
+    <p class="eyebrow">Portfolio</p>
+    <h1>Projets</h1>
+    <p>
+        Une sélection des projets que j'ai pu lancer, des expérimentation que
+        j'ai pu faire, avec un regard sur le processus autant que sur le
+        résultat.
+    </p>
 </section>
 
 <section class="page-shell project-list">
-  @for (project of projects$ | async; track project.id) {
-    <article class="project-row">
-      <div>
-        <p class="project-meta">
-          {{ project.category || 'Projet' }}
-          @if (project.startedAt) {
-            · {{ project.startedAt | date: 'yyyy' }}
-          }
-        </p>
-        <h2>
-          <a [routerLink]="['/projets', project.slug]">
-            {{ project.title }}
-          </a>
-        </h2>
-        @if (project.lastCommitAt) {
-          <app-project-activity
-            [date]="project.lastCommitAt"
-            [compact]="true"
-          />
-        }
-      </div>
-      <p>{{ project.summary }}</p>
-      <span aria-hidden="true">↗</span>
-    </article>
-  } @empty {
-    <p class="empty-state">Aucun projet publié pour le moment.</p>
-  }
+    @for (project of projects$ | async; track project.id) {
+        <article class="project-row">
+            <div>
+                <p class="project-meta">
+                    {{ project.category || 'Projet' }}
+                    @if (project.startedAt) {
+                        · {{ project.startedAt | date: 'yyyy' }}
+                    }
+                </p>
+                <h2>
+                    <a [routerLink]="['/projets', project.slug]">
+                        {{ project.title }}
+                    </a>
+                </h2>
+                @if (project.lastCommitAt) {
+                    <app-project-activity
+                        [date]="project.lastCommitAt"
+                        [compact]="true"
+                    />
+                }
+            </div>
+            <p>{{ project.summary }}</p>
+            <span aria-hidden="true">↗</span>
+        </article>
+    } @empty {
+        <p class="empty-state">Aucun projet publié pour le moment.</p>
+    }
 </section>

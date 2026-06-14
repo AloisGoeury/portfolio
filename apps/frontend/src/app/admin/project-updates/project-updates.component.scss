@@ -1,27 +1,27 @@
 .queue-intro {
-  max-width: 720px;
-  color: var(--muted);
+    max-width: 720px;
+    color: var(--muted);
 }
 
 .queue-list {
-  display: grid;
-  gap: 28px;
-  margin-top: 42px;
+    display: grid;
+    gap: 28px;
+    margin-top: 42px;
 }
 
 .queue-list article {
-  display: grid;
-  gap: 18px;
-  padding: 26px;
-  border: 1px solid var(--line);
+    display: grid;
+    gap: 18px;
+    padding: 26px;
+    border: 1px solid var(--line);
 }
 
 .queue-list header {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
 }
 
 .queue-list header p {
-  margin: 6px 0 0;
+    margin: 6px 0 0;
 }

@@ -1,62 +1,66 @@
 <section class="admin-shell">
-  <div class="admin-heading">
-    <div>
-      <a class="back-link" routerLink="/admin/projects">← Projets</a>
-      <p class="eyebrow">Administration</p>
-      <h1>Notes</h1>
-    </div>
-    <div class="button-row">
-      <a class="button button-secondary" routerLink="/admin/project-updates">
-        File GitHub
-      </a>
-      <a class="button" routerLink="/admin/notes/new">Nouvelle note</a>
-    </div>
-  </div>
-
-  @if (error()) {
-    <p class="form-error">{{ error() }}</p>
-  }
-
-  <div class="admin-list">
-    @for (note of notes(); track note.id) {
-      <article>
+    <div class="admin-heading">
         <div>
-          <span class="status" [class.status-live]="note.published">
-            {{ note.published ? 'Publiée' : 'Brouillon' }}
-          </span>
-          <h2>{{ note.title }}</h2>
-          <p>
-            Modifiée le {{ note.updatedAt | date: 'dd/MM/yyyy à HH:mm' }}
-            @if (note.projectTitle) {
-              · {{ note.projectTitle }}
-            }
-          </p>
+            <a class="back-link" routerLink="/admin/projects">← Projets</a>
+            <p class="eyebrow">Administration</p>
+            <h1>Notes</h1>
         </div>
         <div class="button-row">
-          <button
-            class="button button-secondary"
-            type="button"
-            (click)="togglePublished(note)"
-          >
-            {{ note.published ? 'Dépublier' : 'Publier' }}
-          </button>
-          <a
-            class="button button-secondary"
-            [routerLink]="['/admin/notes', note.id, 'edit']"
-          >
-            Modifier
-          </a>
-          <button
-            class="button button-danger"
-            type="button"
-            (click)="remove(note)"
-          >
-            Supprimer
-          </button>
+            <a
+                class="button button-secondary"
+                routerLink="/admin/project-updates"
+            >
+                File GitHub
+            </a>
+            <a class="button" routerLink="/admin/notes/new">Nouvelle note</a>
         </div>
-      </article>
-    } @empty {
-      <p class="empty-state">Aucune note dans le CMS.</p>
+    </div>
+
+    @if (error()) {
+        <p class="form-error">{{ error() }}</p>
     }
-  </div>
+
+    <div class="admin-list">
+        @for (note of notes(); track note.id) {
+            <article>
+                <div>
+                    <span class="status" [class.status-live]="note.published">
+                        {{ note.published ? 'Publiée' : 'Brouillon' }}
+                    </span>
+                    <h2>{{ note.title }}</h2>
+                    <p>
+                        Modifiée le
+                        {{ note.updatedAt | date: 'dd/MM/yyyy à HH:mm' }}
+                        @if (note.projectTitle) {
+                            · {{ note.projectTitle }}
+                        }
+                    </p>
+                </div>
+                <div class="button-row">
+                    <button
+                        class="button button-secondary"
+                        type="button"
+                        (click)="togglePublished(note)"
+                    >
+                        {{ note.published ? 'Dépublier' : 'Publier' }}
+                    </button>
+                    <a
+                        class="button button-secondary"
+                        [routerLink]="['/admin/notes', note.id, 'edit']"
+                    >
+                        Modifier
+                    </a>
+                    <button
+                        class="button button-danger"
+                        type="button"
+                        (click)="remove(note)"
+                    >
+                        Supprimer
+                    </button>
+                </div>
+            </article>
+        } @empty {
+            <p class="empty-state">Aucune note dans le CMS.</p>
+        }
+    </div>
 </section>

@@ -1,57 +1,65 @@
 <section class="admin-shell">
-  <a class="back-link" routerLink="/admin/notes">← Toutes les notes</a>
-  <p class="eyebrow">Administration</p>
-  <h1>{{ noteId ? 'Modifier la note' : 'Nouvelle note' }}</h1>
+    <a class="back-link" routerLink="/admin/notes">← Toutes les notes</a>
+    <p class="eyebrow">Administration</p>
+    <h1>{{ noteId ? 'Modifier la note' : 'Nouvelle note' }}</h1>
 
-  <form [formGroup]="form" (ngSubmit)="save()">
-    <div class="form-grid">
-      <label class="field-wide">
-        Projet associé
-        <select formControlName="projectId">
-          <option value="">Aucun projet</option>
-          @for (project of projects(); track project.id) {
-            <option [value]="project.id">{{ project.title }}</option>
-          }
-        </select>
-      </label>
-      <label class="field-wide">
-        Titre
-        <input formControlName="title" (blur)="suggestSlug()" />
-      </label>
-      <label class="field-wide">
-        Slug
-        <input formControlName="slug" />
-      </label>
-      <label class="field-wide">
-        Résumé
-        <textarea formControlName="excerpt" rows="3"></textarea>
-      </label>
-      <label class="field-wide">
-        Contenu Markdown
-        <textarea
-          class="editor"
-          formControlName="contentMarkdown"
-          rows="18"
-        ></textarea>
-      </label>
-    </div>
+    <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-grid">
+            <label class="field-wide">
+                Projet associé
+                <select formControlName="projectId">
+                    <option value="">Aucun projet</option>
+                    @for (project of projects(); track project.id) {
+                        <option [value]="project.id">
+                            {{ project.title }}
+                        </option>
+                    }
+                </select>
+            </label>
+            <label class="field-wide">
+                Titre
+                <input formControlName="title" (blur)="suggestSlug()" />
+            </label>
+            <label class="field-wide">
+                Slug
+                <input formControlName="slug" />
+            </label>
+            <label class="field-wide">
+                Résumé
+                <textarea formControlName="excerpt" rows="3"></textarea>
+            </label>
+            <label class="field-wide">
+                Contenu Markdown
+                <textarea
+                    class="editor"
+                    formControlName="contentMarkdown"
+                    rows="18"
+                ></textarea>
+            </label>
+        </div>
 
-    <div class="checkbox-row">
-      <label>
-        <input type="checkbox" formControlName="published" />
-        Note publiée
-      </label>
-    </div>
+        <div class="checkbox-row">
+            <label>
+                <input type="checkbox" formControlName="published" />
+                Note publiée
+            </label>
+        </div>
 
-    @if (error()) {
-      <p class="form-error">{{ error() }}</p>
-    }
+        @if (error()) {
+            <p class="form-error">{{ error() }}</p>
+        }
 
-    <div class="button-row">
-      <button class="button" type="submit" [disabled]="form.invalid || busy()">
-        {{ busy() ? 'Enregistrement…' : 'Enregistrer' }}
-      </button>
-      <a class="button button-secondary" routerLink="/admin/notes">Annuler</a>
-    </div>
-  </form>
+        <div class="button-row">
+            <button
+                class="button"
+                type="submit"
+                [disabled]="form.invalid || busy()"
+            >
+                {{ busy() ? 'Enregistrement…' : 'Enregistrer' }}
+            </button>
+            <a class="button button-secondary" routerLink="/admin/notes"
+                >Annuler</a
+            >
+        </div>
+    </form>
 </section>

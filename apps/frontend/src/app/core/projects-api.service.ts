@@ -5,33 +5,33 @@ import { Project, ProjectPayload } from './project.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectsApiService {
-  private readonly http = inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-  listPublished(): Observable<Project[]> {
-    return this.http.get<Project[]>('/api/projects');
-  }
+    listPublished(): Observable<Project[]> {
+        return this.http.get<Project[]>('/api/projects');
+    }
 
-  findPublished(slug: string): Observable<Project> {
-    return this.http.get<Project>(`/api/projects/${slug}`);
-  }
+    findPublished(slug: string): Observable<Project> {
+        return this.http.get<Project>(`/api/projects/${slug}`);
+    }
 
-  listAdmin(): Observable<Project[]> {
-    return this.http.get<Project[]>('/api/admin/projects');
-  }
+    listAdmin(): Observable<Project[]> {
+        return this.http.get<Project[]>('/api/admin/projects');
+    }
 
-  findAdmin(id: string): Observable<Project> {
-    return this.http.get<Project>(`/api/admin/projects/${id}`);
-  }
+    findAdmin(id: string): Observable<Project> {
+        return this.http.get<Project>(`/api/admin/projects/${id}`);
+    }
 
-  create(payload: ProjectPayload): Observable<Project> {
-    return this.http.post<Project>('/api/admin/projects', payload);
-  }
+    create(payload: ProjectPayload): Observable<Project> {
+        return this.http.post<Project>('/api/admin/projects', payload);
+    }
 
-  update(id: string, payload: Partial<ProjectPayload>): Observable<Project> {
-    return this.http.patch<Project>(`/api/admin/projects/${id}`, payload);
-  }
+    update(id: string, payload: Partial<ProjectPayload>): Observable<Project> {
+        return this.http.patch<Project>(`/api/admin/projects/${id}`, payload);
+    }
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`/api/admin/projects/${id}`);
-  }
+    delete(id: string): Observable<void> {
+        return this.http.delete<void>(`/api/admin/projects/${id}`);
+    }
 }

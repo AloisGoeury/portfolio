@@ -1,25 +1,25 @@
 <section class="page-shell page-intro">
-  <p class="eyebrow">Carnet</p>
-  <h1>Notes</h1>
-  <p>
-    Des fragments sur le code, l'organisation et la façon dont les outils
-    transforment notre manière de travailler.
-  </p>
+    <p class="eyebrow">Carnet</p>
+    <h1>Notes</h1>
+    <p>
+        Des fragments sur le code, l'organisation et la façon dont les outils
+        transforment notre manière de travailler.
+    </p>
 </section>
 
 <section class="page-shell note-list">
-  @for (note of notes$ | async; track note.id) {
-    <article>
-      <time [attr.datetime]="note.publishedAt || note.createdAt">
-        {{ note.publishedAt || note.createdAt | date: 'dd MMMM yyyy' }}
-      </time>
-      <h2>{{ note.title }}</h2>
-      @if (note.excerpt) {
-        <p>{{ note.excerpt }}</p>
-      }
-      <div class="prose note-content" [innerHTML]="note.html"></div>
-    </article>
-  } @empty {
-    <p class="empty-state">Aucune note publiée pour le moment.</p>
-  }
+    @for (note of notes$ | async; track note.id) {
+        <article>
+            <time [attr.datetime]="note.publishedAt || note.createdAt">
+                {{ note.publishedAt || note.createdAt | date: 'dd MMMM yyyy' }}
+            </time>
+            <h2>{{ note.title }}</h2>
+            @if (note.excerpt) {
+                <p>{{ note.excerpt }}</p>
+            }
+            <div class="prose note-content" [innerHTML]="note.html"></div>
+        </article>
+    } @empty {
+        <p class="empty-state">Aucune note publiée pour le moment.</p>
+    }
 </section>

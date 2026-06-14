@@ -4,10 +4,10 @@ import { LoginDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
-  login(@Body() dto: LoginDto): Promise<{ accessToken: string }> {
-    return this.authService.login(dto);
-  }
+    @Post('login')
+    login(@Body() dto: LoginDto): Promise<{ accessToken: string }> {
+        return this.authService.login(dto);
+    }
 }

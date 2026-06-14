@@ -49,29 +49,29 @@ const PROJECT_FIELDS = `
 `;
 
 export const projectsSql = {
-  listPublished: `
+    listPublished: `
     SELECT ${PROJECT_FIELDS}
     FROM projects p
     WHERE p.published = true
     ORDER BY p.featured DESC, COALESCE(p.ended_at, p.started_at) DESC NULLS LAST,
       p.created_at DESC
   `,
-  findPublishedBySlug: `
+    findPublishedBySlug: `
     SELECT ${PROJECT_FIELDS}
     FROM projects p
     WHERE p.slug = $1 AND p.published = true
   `,
-  listAdmin: `
+    listAdmin: `
     SELECT ${PROJECT_FIELDS}
     FROM projects p
     ORDER BY p.updated_at DESC
   `,
-  findAdminById: `
+    findAdminById: `
     SELECT ${PROJECT_FIELDS}
     FROM projects p
     WHERE p.id = $1
   `,
-  create: `
+    create: `
     INSERT INTO projects (
       title, slug, summary, content_markdown, status, category, cover_url,
       github_repository_url, featured, published, started_at, ended_at
@@ -79,7 +79,7 @@ export const projectsSql = {
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING id
   `,
-  update: `
+    update: `
     UPDATE projects
     SET title = $2,
         slug = $3,
@@ -96,20 +96,20 @@ export const projectsSql = {
         updated_at = now()
     WHERE id = $1
   `,
-  delete: 'DELETE FROM projects WHERE id = $1',
-  clearTags: 'DELETE FROM project_tags WHERE project_id = $1',
-  upsertTag: `
+    delete: 'DELETE FROM projects WHERE id = $1',
+    clearTags: 'DELETE FROM project_tags WHERE project_id = $1',
+    upsertTag: `
     INSERT INTO tags (name, slug)
     VALUES ($1, $2)
     ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name
     RETURNING id
   `,
-  attachTag: `
+    attachTag: `
     INSERT INTO project_tags (project_id, tag_id)
     VALUES ($1, $2)
   `,
-  clearLinks: 'DELETE FROM project_links WHERE project_id = $1',
-  addLink: `
+    clearLinks: 'DELETE FROM project_links WHERE project_id = $1',
+    addLink: `
     INSERT INTO project_links (project_id, label, url, type)
     VALUES ($1, $2, $3, $4)
   `,

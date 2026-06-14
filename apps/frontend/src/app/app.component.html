@@ -1,20 +1,20 @@
 <header class="site-header">
-  <a class="wordmark" routerLink="/">Aloïs Goeury</a>
-  <nav aria-label="Navigation principale">
-    <a routerLink="/projets" routerLinkActive="active">Projets</a>
-    <a routerLink="/notes" routerLinkActive="active">Notes</a>
-    <a routerLink="/a-propos" routerLinkActive="active">À propos</a>
-    @if (isAuthenticated()) {
-      <a routerLink="/admin/projects" routerLinkActive="active">Admin</a>
-    }
-  </nav>
+    <a class="wordmark" routerLink="/">Aloïs Goeury</a>
+    <nav aria-label="Navigation principale">
+        <a routerLink="/projets" routerLinkActive="active">Projets</a>
+        <a routerLink="/notes" routerLinkActive="active">Notes</a>
+        <a routerLink="/a-propos" routerLinkActive="active">À propos</a>
+        @if (isAuthenticated()) {
+            <a routerLink="/admin/projects" routerLinkActive="active">Admin</a>
+        }
+    </nav>
 </header>
 
 <main>
-  <router-outlet />
+    <router-outlet />
 </main>
 
 <footer class="site-footer">
-  <p>Conçu et écrit avec attention.</p>
-  <a href="mailto:alois.goeury@hotmail.com">alois.goeury&#64;hotmail.com</a>
+    <p>Conçu et écrit avec attention.</p>
+    <a href="mailto:alois.goeury@hotmail.com">alois.goeury&#64;hotmail.com</a>
 </footer>

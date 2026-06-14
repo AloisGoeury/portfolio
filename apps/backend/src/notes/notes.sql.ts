@@ -32,33 +32,33 @@ const QUEUE_FIELDS = `
 `;
 
 export const notesSql = {
-  listPublished: `
+    listPublished: `
     SELECT ${NOTE_FIELDS}
     FROM notes n
     LEFT JOIN projects p ON p.id = n.project_id
     WHERE n.published = true
     ORDER BY n.published_at DESC NULLS LAST, n.created_at DESC
   `,
-  listAdmin: `
+    listAdmin: `
     SELECT ${NOTE_FIELDS}
     FROM notes n
     LEFT JOIN projects p ON p.id = n.project_id
     ORDER BY n.updated_at DESC
   `,
-  findAdminById: `
+    findAdminById: `
     SELECT ${NOTE_FIELDS}
     FROM notes n
     LEFT JOIN projects p ON p.id = n.project_id
     WHERE n.id = $1
   `,
-  create: `
+    create: `
     INSERT INTO notes (
       project_id, title, slug, excerpt, content_markdown, published, published_at
     )
     VALUES ($1, $2, $3, $4, $5, $6, CASE WHEN $6 THEN now() ELSE NULL END)
     RETURNING id
   `,
-  update: `
+    update: `
     UPDATE notes
     SET project_id = $2,
         title = $3,
@@ -74,13 +74,13 @@ export const notesSql = {
         updated_at = now()
     WHERE id = $1
   `,
-  delete: 'DELETE FROM notes WHERE id = $1',
-  findProjectForUpdate: `
+    delete: 'DELETE FROM notes WHERE id = $1',
+    findProjectForUpdate: `
     SELECT id, title, slug, github_repository_url AS "githubRepositoryUrl"
     FROM projects
     WHERE slug = $1
   `,
-  updateLastCommit: `
+    updateLastCommit: `
     UPDATE projects
     SET last_commit_sha = $2,
         last_commit_url = $3,
@@ -90,7 +90,7 @@ export const notesSql = {
     WHERE id = $1
       AND (last_commit_at IS NULL OR last_commit_at <= $5)
   `,
-  enqueueProjectUpdate: `
+    enqueueProjectUpdate: `
     INSERT INTO project_update_queue (
       project_id, commit_sha, commit_url, commit_message, committed_at,
       author_name, proposed_title, proposed_content_markdown
@@ -104,7 +104,7 @@ export const notesSql = {
         updated_at = now()
     RETURNING id
   `,
-  listQueue: `
+    listQueue: `
     SELECT ${QUEUE_FIELDS}
     FROM project_update_queue q
     JOIN projects p ON p.id = q.project_id
@@ -112,25 +112,25 @@ export const notesSql = {
       CASE q.status WHEN 'pending' THEN 0 WHEN 'published' THEN 1 ELSE 2 END,
       q.committed_at DESC
   `,
-  findQueueById: `
+    findQueueById: `
     SELECT ${QUEUE_FIELDS}
     FROM project_update_queue q
     JOIN projects p ON p.id = q.project_id
     WHERE q.id = $1
   `,
-  updateQueueDraft: `
+    updateQueueDraft: `
     UPDATE project_update_queue
     SET proposed_title = $2,
         proposed_content_markdown = $3,
         updated_at = now()
     WHERE id = $1 AND status = 'pending'
   `,
-  ignoreQueueItem: `
+    ignoreQueueItem: `
     UPDATE project_update_queue
     SET status = 'ignored', updated_at = now()
     WHERE id = $1 AND status = 'pending'
   `,
-  createNoteFromQueue: `
+    createNoteFromQueue: `
     INSERT INTO notes (
       project_id, title, slug, excerpt, content_markdown, published, published_at
     )
@@ -141,7 +141,7 @@ export const notesSql = {
     WHERE id = $1 AND status = 'pending'
     RETURNING id
   `,
-  markQueuePublished: `
+    markQueuePublished: `
     UPDATE project_update_queue
     SET status = 'published', note_id = $2, updated_at = now()
     WHERE id = $1
