@@ -12,8 +12,8 @@ async function seedDatabase(): Promise<void> {
     const pageCreated = await seedPageContent(database);
     console.log(
       pageCreated
-        ? 'Initial about page created.'
-        : 'About page already exists.',
+        ? 'Missing initial page content created.'
+        : 'Initial page content already exists.',
     );
 
     if (!email || !password) {

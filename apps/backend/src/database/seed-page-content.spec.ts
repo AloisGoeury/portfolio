@@ -10,10 +10,25 @@ describe('seedPageContent', () => {
     jest.clearAllMocks();
   });
 
-  it('creates the initial about page in current and history', async () => {
+  it('creates the initial pages in current and history', async () => {
     const client = {
       query: jest
         .fn()
+        .mockResolvedValueOnce({ rows: [], rowCount: 0 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
         .mockResolvedValueOnce({ rows: [], rowCount: 0 })
         .mockResolvedValue({ rows: [], rowCount: 1 }),
     };
@@ -23,7 +38,11 @@ describe('seedPageContent', () => {
 
     await expect(seedPageContent(database)).resolves.toBe(true);
 
-    expect(client.query).toHaveBeenCalledTimes(9);
+    expect(client.query).toHaveBeenCalledTimes(24);
+    expect(client.query).toHaveBeenCalledWith(
+      expect.stringContaining('INSERT INTO page_content_current'),
+      expect.arrayContaining(['home', 1, 'sectionTitle', 'Travaux récents']),
+    );
     expect(client.query).toHaveBeenCalledWith(
       expect.stringContaining('INSERT INTO page_content_current'),
       expect.arrayContaining([
@@ -41,15 +60,16 @@ describe('seedPageContent', () => {
 
   it('does not overwrite an existing page', async () => {
     const client = {
-      query: jest
-        .fn()
-        .mockResolvedValueOnce({ rows: [{ '?column?': 1 }], rowCount: 1 }),
+      query: jest.fn().mockResolvedValue({
+        rows: [{ '?column?': 1 }],
+        rowCount: 1,
+      }),
     };
     jest
       .mocked(database.transaction)
       .mockImplementationOnce(async (callback) => callback(client));
 
     await expect(seedPageContent(database)).resolves.toBe(false);
-    expect(client.query).toHaveBeenCalledTimes(1);
+    expect(client.query).toHaveBeenCalledTimes(2);
   });
 });

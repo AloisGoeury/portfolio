@@ -26,6 +26,40 @@ describe('PagesApiService', () => {
     http.verify();
   });
 
+  it('loads the public home page', () => {
+    service.findHome().subscribe();
+
+    const request = http.expectOne('/api/pages/home');
+    expect(request.request.method).toBe('GET');
+    request.flush({});
+  });
+
+  it('loads and updates the protected home page', () => {
+    const payload = {
+      eyebrow: 'Profil',
+      title: 'Titre',
+      introduction: 'Introduction',
+      linkLabel: 'Projets',
+      sectionEyebrow: 'Sélection',
+      sectionTitle: 'Travaux',
+      emptyMessage: 'Aucun projet.',
+    };
+
+    service.findHomeAdmin().subscribe();
+    http.expectOne('/api/admin/pages/home').flush({});
+
+    service.updateHome(payload).subscribe();
+    const updateRequest = http.expectOne('/api/admin/pages/home');
+    expect(updateRequest.request.method).toBe('PATCH');
+    expect(updateRequest.request.body).toEqual(payload);
+    updateRequest.flush({});
+
+    service.listHomeHistory().subscribe();
+    const historyRequest = http.expectOne('/api/admin/pages/home/history');
+    expect(historyRequest.request.method).toBe('GET');
+    historyRequest.flush([]);
+  });
+
   it('loads the public about page', () => {
     service.findAbout().subscribe();
 

@@ -1,0 +1,26 @@
+.form-success {
+  padding: 12px 14px;
+  border-left: 3px solid #33714b;
+  background: #dce9df;
+  color: #245337;
+}
+
+.history {
+  margin-top: 80px;
+  padding-top: 48px;
+  border-top: 1px solid var(--line);
+}
+
+.history h2 {
+  margin: 8px 0 28px;
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+}
+
+.history h3 {
+  margin: 8px 0 0;
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+}

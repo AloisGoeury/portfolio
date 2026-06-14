@@ -75,6 +75,7 @@ describe('Portfolio API (e2e)', () => {
     await request(app.getHttpServer())
       .get('/api/admin/pages/about')
       .expect(401);
+    await request(app.getHttpServer()).get('/api/admin/pages/home').expect(401);
     await request(app.getHttpServer()).get('/api/admin/notes').expect(401);
     await request(app.getHttpServer())
       .get('/api/admin/project-updates')
@@ -116,6 +117,47 @@ describe('Portfolio API (e2e)', () => {
       history.body.map((version: { version: number }) => version.version),
     ).toEqual([2, 1]);
     expect(history.body[1].title).toBe('Faire moins, mais le faire avec soin.');
+  });
+
+  it('edits the home page while keeping its previous version', async () => {
+    const initial = await request(app.getHttpServer())
+      .get('/api/pages/home')
+      .expect(200);
+    expect(initial.body).toMatchObject({
+      version: 1,
+      sectionTitle: 'Travaux récents',
+    });
+
+    await request(app.getHttpServer())
+      .patch('/api/admin/pages/home')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        eyebrow: 'Profil',
+        title: 'Accueil version 2',
+        introduction: 'Une nouvelle introduction.',
+        linkLabel: 'Voir mes projets',
+        sectionEyebrow: 'Sélection',
+        sectionTitle: 'Projets choisis',
+        emptyMessage: 'Aucun projet choisi.',
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          version: 2,
+          title: 'Accueil version 2',
+          sectionTitle: 'Projets choisis',
+        });
+      });
+
+    const history = await request(app.getHttpServer())
+      .get('/api/admin/pages/home/history')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200);
+    expect(history.body).toHaveLength(2);
+    expect(
+      history.body.map((version: { version: number }) => version.version),
+    ).toEqual([2, 1]);
+    expect(history.body[1].sectionTitle).toBe('Travaux récents');
   });
 
   it('keeps drafts private, then exposes them after publication', async () => {

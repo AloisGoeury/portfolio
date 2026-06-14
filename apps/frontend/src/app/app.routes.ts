@@ -51,6 +51,15 @@ export const routes: Routes = [
     title: 'Connexion — Portfolio',
   },
   {
+    path: 'admin/home',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/home-form/home-form.component').then(
+        (module) => module.HomeFormComponent,
+      ),
+    title: 'Modifier la page d’accueil',
+  },
+  {
     path: 'admin/about',
     canActivate: [authGuard],
     loadComponent: () =>

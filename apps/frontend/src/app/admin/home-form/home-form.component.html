@@ -1,0 +1,79 @@
+<section class="admin-shell">
+  <div class="admin-heading">
+    <div>
+      <a class="back-link" routerLink="/admin/projects">← Projets</a>
+      <p class="eyebrow">Administration</p>
+      <h1>Accueil</h1>
+    </div>
+    <a class="button button-secondary" routerLink="/">Voir la page</a>
+  </div>
+
+  @if (current(); as page) {
+    <p class="muted">
+      Version {{ page.version }}, mise à jour le
+      {{ page.updatedAt | date: 'dd/MM/yyyy à HH:mm' }}
+    </p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-grid">
+      <label>
+        Surtitre du home
+        <input formControlName="eyebrow" />
+      </label>
+      <label class="field-wide">
+        Titre principal
+        <textarea formControlName="title" rows="4"></textarea>
+      </label>
+      <label class="field-wide">
+        Introduction
+        <textarea formControlName="introduction" rows="5"></textarea>
+      </label>
+      <label class="field-wide">
+        Libellé du lien vers les projets
+        <input formControlName="linkLabel" />
+      </label>
+      <label>
+        Surtitre de la sélection
+        <input formControlName="sectionEyebrow" />
+      </label>
+      <label>
+        Titre de la sélection
+        <input formControlName="sectionTitle" />
+      </label>
+      <label class="field-wide">
+        Message lorsqu’aucun projet n’est sélectionné
+        <input formControlName="emptyMessage" />
+      </label>
+    </div>
+
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+    @if (saved()) {
+      <p class="form-success">Nouvelle version enregistrée.</p>
+    }
+
+    <button class="button" type="submit" [disabled]="form.invalid || busy()">
+      {{ busy() ? 'Enregistrement…' : 'Enregistrer une nouvelle version' }}
+    </button>
+  </form>
+
+  <section class="history">
+    <p class="eyebrow">Historique</p>
+    <h2>Versions enregistrées</h2>
+    <div class="admin-list">
+      @for (version of history(); track version.version) {
+        <article>
+          <div>
+            <span class="status">Version {{ version.version }}</span>
+            <h3>{{ version.title }}</h3>
+            <p>
+              {{ version.updatedAt | date: 'dd/MM/yyyy à HH:mm' }}
+            </p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+</section>

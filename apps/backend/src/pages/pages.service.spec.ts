@@ -14,6 +14,21 @@ const aboutRow = {
   },
 };
 
+const homeRow = {
+  pageName: 'home',
+  version: 1,
+  updatedAt: '2026-06-14T10:00:00.000Z',
+  cells: {
+    eyebrow: 'Développeur',
+    title: 'Titre accueil',
+    introduction: 'Introduction',
+    linkLabel: 'Voir les projets',
+    sectionEyebrow: 'Sélection',
+    sectionTitle: 'Travaux récents',
+    emptyMessage: 'Aucun projet.',
+  },
+};
+
 describe('PagesService', () => {
   const database = {
     query: jest.fn(),
@@ -53,6 +68,35 @@ describe('PagesService', () => {
       expect.objectContaining({ version: 1 }),
     ]);
     expect(pagesSql.listHistory).toContain('page_content_history');
+  });
+
+  it('maps the current home page and its history', async () => {
+    jest
+      .mocked(database.query)
+      .mockResolvedValueOnce({
+        rows: [homeRow],
+        rowCount: 1,
+      } as never)
+      .mockResolvedValueOnce({
+        rows: [{ ...homeRow, version: 2 }, homeRow],
+        rowCount: 2,
+      } as never);
+
+    await expect(service.findHome()).resolves.toMatchObject({
+      pageName: 'home',
+      title: 'Titre accueil',
+      sectionTitle: 'Travaux récents',
+    });
+    await expect(service.listHomeHistory()).resolves.toEqual([
+      expect.objectContaining({ version: 2 }),
+      expect.objectContaining({ version: 1 }),
+    ]);
+    expect(database.query).toHaveBeenNthCalledWith(1, pagesSql.findCurrent, [
+      'home',
+    ]);
+    expect(database.query).toHaveBeenNthCalledWith(2, pagesSql.listHistory, [
+      'home',
+    ]);
   });
 
   it('writes the new version to current and history in one transaction', async () => {
@@ -101,6 +145,53 @@ describe('PagesService', () => {
     expect(client.query).toHaveBeenCalledWith(
       pagesSql.insertHistory,
       expect.arrayContaining(['about', 2, 'title', 'Nouveau titre']),
+    );
+  });
+
+  it('writes a new home version with the home page key', async () => {
+    const client = {
+      query: jest
+        .fn()
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ version: 1 }] })
+        .mockResolvedValue({ rows: [], rowCount: 1 }),
+    };
+    jest
+      .mocked(database.transaction)
+      .mockImplementationOnce(async (callback) => callback(client));
+    jest.spyOn(service, 'findHome').mockResolvedValueOnce({
+      pageName: 'home',
+      version: 2,
+      updatedAt: '2026-06-14T11:00:00.000Z',
+      eyebrow: 'Profil',
+      title: 'Nouvel accueil',
+      introduction: 'Nouvelle introduction',
+      linkLabel: 'Mes projets',
+      sectionEyebrow: 'Sélection',
+      sectionTitle: 'Projets choisis',
+      emptyMessage: 'Aucun projet.',
+    });
+
+    await service.updateHome({
+      eyebrow: 'Profil',
+      title: 'Nouvel accueil',
+      introduction: 'Nouvelle introduction',
+      linkLabel: 'Mes projets',
+      sectionEyebrow: 'Sélection',
+      sectionTitle: 'Projets choisis',
+      emptyMessage: 'Aucun projet.',
+    });
+
+    expect(client.query).toHaveBeenNthCalledWith(1, pagesSql.lockPage, [
+      'home',
+    ]);
+    expect(client.query).toHaveBeenCalledWith(
+      pagesSql.insertCurrent,
+      expect.arrayContaining(['home', 2, 'sectionTitle', 'Projets choisis']),
+    );
+    expect(client.query).toHaveBeenCalledWith(
+      pagesSql.insertHistory,
+      expect.arrayContaining(['home', 2, 'sectionTitle', 'Projets choisis']),
     );
   });
 });
