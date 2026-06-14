@@ -1,71 +1,71 @@
 .activity {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 13px;
-  width: min(100%, 620px);
-  margin-top: 32px;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 13px;
+    width: min(100%, 620px);
+    margin-top: 32px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
 }
 
 .activity-dot {
-  width: 9px;
-  height: 9px;
-  margin-top: 7px;
-  border-radius: 50%;
-  background: #33714b;
-  box-shadow: 0 0 0 4px rgb(51 113 75 / 12%);
+    width: 9px;
+    height: 9px;
+    margin-top: 7px;
+    border-radius: 50%;
+    background: #33714b;
+    box-shadow: 0 0 0 4px rgb(51 113 75 / 12%);
 }
 
 .activity-label,
 .activity time {
-  display: block;
-  margin: 0;
+    display: block;
+    margin: 0;
 }
 
 .activity-label {
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .activity time {
-  margin-top: 2px;
-  color: var(--muted);
-  font-family: var(--sans);
-  font-size: 0.85rem;
-  letter-spacing: normal;
-  text-transform: none;
+    margin-top: 2px;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .activity a {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 0.85rem;
-  font-weight: 600;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .activity-compact {
-  width: fit-content;
-  margin-top: 16px;
-  padding: 9px 12px;
-  background: transparent;
+    width: fit-content;
+    margin-top: 16px;
+    padding: 9px 12px;
+    background: transparent;
 }
 
 .activity-compact .activity-dot {
-  width: 7px;
-  height: 7px;
-  margin-top: 6px;
+    width: 7px;
+    height: 7px;
+    margin-top: 6px;
 }
 
 .activity-compact .activity-label {
-  font-size: 0.62rem;
+    font-size: 0.62rem;
 }
 
 .activity-compact time {
-  font-size: 0.75rem;
+    font-size: 0.75rem;
 }

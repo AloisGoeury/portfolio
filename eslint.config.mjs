@@ -6,72 +6,72 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  {
-    ignores: [
-      '**/dist/**',
-      '**/node_modules/**',
-      'apps/backend/public/**',
-      'apps/frontend/.angular/**',
-      'coverage/**',
-    ],
-  },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ['apps/backend/{src,test}/**/*.ts'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.jest,
-      },
+    {
+        ignores: [
+            '**/dist/**',
+            '**/node_modules/**',
+            'apps/backend/public/**',
+            'apps/frontend/.angular/**',
+            'coverage/**',
+        ],
     },
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  {
-    files: ['apps/frontend/src/**/*.ts'],
-    plugins: {
-      '@angular-eslint': angular,
-      '@angular-eslint/template': angularTemplate,
-    },
-    processor: '@angular-eslint/template/extract-inline-html',
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-      },
-    },
-    rules: {
-      ...angular.configs.recommended.rules,
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'app',
-          style: 'kebab-case',
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended,
+    {
+        files: ['apps/backend/{src,test}/**/*.ts'],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+                ...globals.jest,
+            },
         },
-      ],
-      '@angular-eslint/directive-selector': [
-        'error',
-        {
-          type: 'attribute',
-          prefix: 'app',
-          style: 'camelCase',
+        rules: {
+            '@typescript-eslint/no-explicit-any': 'off',
         },
-      ],
     },
-  },
-  {
-    files: ['**/*.html'],
-    plugins: {
-      '@angular-eslint/template': angularTemplate,
+    {
+        files: ['apps/frontend/src/**/*.ts'],
+        plugins: {
+            '@angular-eslint': angular,
+            '@angular-eslint/template': angularTemplate,
+        },
+        processor: '@angular-eslint/template/extract-inline-html',
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+            },
+        },
+        rules: {
+            ...angular.configs.recommended.rules,
+            '@angular-eslint/component-selector': [
+                'error',
+                {
+                    type: 'element',
+                    prefix: 'app',
+                    style: 'kebab-case',
+                },
+            ],
+            '@angular-eslint/directive-selector': [
+                'error',
+                {
+                    type: 'attribute',
+                    prefix: 'app',
+                    style: 'camelCase',
+                },
+            ],
+        },
     },
-    languageOptions: {
-      parser: angularTemplateParser,
+    {
+        files: ['**/*.html'],
+        plugins: {
+            '@angular-eslint/template': angularTemplate,
+        },
+        languageOptions: {
+            parser: angularTemplateParser,
+        },
+        rules: {
+            ...angularTemplate.configs.recommended.rules,
+            ...angularTemplate.configs.accessibility.rules,
+        },
     },
-    rules: {
-      ...angularTemplate.configs.recommended.rules,
-      ...angularTemplate.configs.accessibility.rules,
-    },
-  },
 );

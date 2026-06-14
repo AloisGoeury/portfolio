@@ -3,15 +3,15 @@ import { inject } from '@angular/core';
 import { AuthService } from './auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
-  const token = inject(AuthService).token();
+    const token = inject(AuthService).token();
 
-  if (token && request.url.startsWith('/api/admin')) {
-    return next(
-      request.clone({
-        setHeaders: { Authorization: `Bearer ${token}` },
-      }),
-    );
-  }
+    if (token && request.url.startsWith('/api/admin')) {
+        return next(
+            request.clone({
+                setHeaders: { Authorization: `Bearer ${token}` },
+            }),
+        );
+    }
 
-  return next(request);
+    return next(request);
 };

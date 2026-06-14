@@ -7,13 +7,13 @@ import { PagesModule } from './pages/pages.module';
 import { ProjectsModule } from './projects/projects.module';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    HealthModule,
-    AuthModule,
-    ProjectsModule,
-    PagesModule,
-    NotesModule,
-  ],
+    imports: [
+        DatabaseModule,
+        HealthModule,
+        AuthModule,
+        ProjectsModule,
+        PagesModule,
+        NotesModule,
+    ],
 })
 export class AppModule {}

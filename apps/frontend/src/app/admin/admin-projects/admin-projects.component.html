@@ -1,63 +1,83 @@
 <section class="admin-shell">
-  <div class="admin-heading">
-    <div>
-      <p class="eyebrow">Administration</p>
-      <h1>Projets</h1>
-    </div>
-    <div class="button-row">
-      <a class="button button-secondary" routerLink="/admin/about">
-        Modifier À propos
-      </a>
-      <a class="button button-secondary" routerLink="/admin/notes"> Notes </a>
-      <a class="button button-secondary" routerLink="/admin/project-updates">
-        File GitHub
-      </a>
-      <a class="button" routerLink="/admin/projects/new">Nouveau projet</a>
-      <button class="button button-secondary" type="button" (click)="logout()">
-        Déconnexion
-      </button>
-    </div>
-  </div>
-
-  @if (error()) {
-    <p class="form-error">{{ error() }}</p>
-  }
-
-  <div class="admin-list">
-    @for (project of projects(); track project.id) {
-      <article>
+    <div class="admin-heading">
         <div>
-          <span class="status" [class.status-live]="project.published">
-            {{ project.published ? 'Publié' : 'Brouillon' }}
-          </span>
-          <h2>{{ project.title }}</h2>
-          <p>Mis à jour le {{ project.updatedAt | date: 'dd/MM/yyyy' }}</p>
+            <p class="eyebrow">Administration</p>
+            <h1>Projets</h1>
         </div>
         <div class="button-row">
-          <button
-            class="button button-secondary"
-            type="button"
-            (click)="togglePublished(project)"
-          >
-            {{ project.published ? 'Dépublier' : 'Publier' }}
-          </button>
-          <a
-            class="button button-secondary"
-            [routerLink]="['/admin/projects', project.id, 'edit']"
-          >
-            Modifier
-          </a>
-          <button
-            class="button button-danger"
-            type="button"
-            (click)="remove(project)"
-          >
-            Supprimer
-          </button>
+            <a class="button button-secondary" routerLink="/admin/home">
+                Modifier l’accueil
+            </a>
+            <a class="button button-secondary" routerLink="/admin/about">
+                Modifier À propos
+            </a>
+            <a class="button button-secondary" routerLink="/admin/notes">
+                Notes
+            </a>
+            <a
+                class="button button-secondary"
+                routerLink="/admin/project-updates"
+            >
+                File GitHub
+            </a>
+            <a class="button" routerLink="/admin/projects/new"
+                >Nouveau projet</a
+            >
+            <button
+                class="button button-secondary"
+                type="button"
+                (click)="logout()"
+            >
+                Déconnexion
+            </button>
         </div>
-      </article>
-    } @empty {
-      <p class="empty-state">Aucun projet dans le CMS.</p>
+    </div>
+
+    @if (error()) {
+        <p class="form-error">{{ error() }}</p>
     }
-  </div>
+
+    <div class="admin-list">
+        @for (project of projects(); track project.id) {
+            <article>
+                <div>
+                    <span
+                        class="status"
+                        [class.status-live]="project.published"
+                    >
+                        {{ project.published ? 'Publié' : 'Brouillon' }}
+                    </span>
+                    <h2>{{ project.title }}</h2>
+                    <p>
+                        Mis à jour le
+                        {{ project.updatedAt | date: 'dd/MM/yyyy' }}
+                    </p>
+                </div>
+                <div class="button-row">
+                    <button
+                        class="button button-secondary"
+                        type="button"
+                        (click)="togglePublished(project)"
+                    >
+                        {{ project.published ? 'Dépublier' : 'Publier' }}
+                    </button>
+                    <a
+                        class="button button-secondary"
+                        [routerLink]="['/admin/projects', project.id, 'edit']"
+                    >
+                        Modifier
+                    </a>
+                    <button
+                        class="button button-danger"
+                        type="button"
+                        (click)="remove(project)"
+                    >
+                        Supprimer
+                    </button>
+                </div>
+            </article>
+        } @empty {
+            <p class="empty-state">Aucun projet dans le CMS.</p>
+        }
+    </div>
 </section>

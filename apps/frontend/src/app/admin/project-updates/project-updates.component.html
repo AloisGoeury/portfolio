@@ -1,83 +1,94 @@
 <section class="admin-shell">
-  <div class="admin-heading">
-    <div>
-      <a class="back-link" routerLink="/admin/notes">← Notes</a>
-      <p class="eyebrow">Administration</p>
-      <h1>File GitHub</h1>
-    </div>
-    <a class="button button-secondary" routerLink="/admin/projects">
-      Projets
-    </a>
-  </div>
-
-  <p class="queue-intro">
-    Chaque commit reçu prépare une note. Réécrivez-la ici avant de la publier,
-    ou ignorez-la si elle ne mérite pas une entrée publique.
-  </p>
-
-  @if (error()) {
-    <p class="form-error">{{ error() }}</p>
-  }
-
-  <div class="queue-list">
-    @for (update of updates(); track update.id) {
-      <article>
-        <header>
-          <div>
-            <p class="eyebrow">{{ update.projectTitle }}</p>
-            <p>
-              {{ update.committedAt | date: 'dd/MM/yyyy à HH:mm' }} ·
-              <a [href]="update.commitUrl" target="_blank" rel="noreferrer">
-                {{ update.commitSha.slice(0, 7) }} ↗
-              </a>
-            </p>
-          </div>
-          <span class="status">En attente</span>
-        </header>
-
-        <label>
-          Titre proposé
-          <input [(ngModel)]="update.proposedTitle" />
-        </label>
-        <label>
-          Résumé public
-          <textarea [(ngModel)]="update.excerpt" rows="2"></textarea>
-        </label>
-        <label>
-          Slug de la note
-          <input [(ngModel)]="update.slug" />
-        </label>
-        <label>
-          Contenu Markdown proposé
-          <textarea
-            class="editor"
-            [(ngModel)]="update.proposedContentMarkdown"
-            rows="8"
-          ></textarea>
-        </label>
-
-        <div class="button-row">
-          <button
-            class="button button-secondary"
-            type="button"
-            (click)="saveDraft(update)"
-          >
-            Enregistrer
-          </button>
-          <button class="button" type="button" (click)="publish(update)">
-            Publier dans les notes
-          </button>
-          <button
-            class="button button-danger"
-            type="button"
-            (click)="ignore(update)"
-          >
-            Ignorer
-          </button>
+    <div class="admin-heading">
+        <div>
+            <a class="back-link" routerLink="/admin/notes">← Notes</a>
+            <p class="eyebrow">Administration</p>
+            <h1>File GitHub</h1>
         </div>
-      </article>
-    } @empty {
-      <p class="empty-state">Aucune proposition GitHub en attente.</p>
+        <a class="button button-secondary" routerLink="/admin/projects">
+            Projets
+        </a>
+    </div>
+
+    <p class="queue-intro">
+        Chaque commit reçu prépare une note. Réécrivez-la ici avant de la
+        publier, ou ignorez-la si elle ne mérite pas une entrée publique.
+    </p>
+
+    @if (error()) {
+        <p class="form-error">{{ error() }}</p>
     }
-  </div>
+
+    <div class="queue-list">
+        @for (update of updates(); track update.id) {
+            <article>
+                <header>
+                    <div>
+                        <p class="eyebrow">{{ update.projectTitle }}</p>
+                        <p>
+                            {{
+                                update.committedAt | date: 'dd/MM/yyyy à HH:mm'
+                            }}
+                            ·
+                            <a
+                                [href]="update.commitUrl"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                {{ update.commitSha.slice(0, 7) }} ↗
+                            </a>
+                        </p>
+                    </div>
+                    <span class="status">En attente</span>
+                </header>
+
+                <label>
+                    Titre proposé
+                    <input [(ngModel)]="update.proposedTitle" />
+                </label>
+                <label>
+                    Résumé public
+                    <textarea [(ngModel)]="update.excerpt" rows="2"></textarea>
+                </label>
+                <label>
+                    Slug de la note
+                    <input [(ngModel)]="update.slug" />
+                </label>
+                <label>
+                    Contenu Markdown proposé
+                    <textarea
+                        class="editor"
+                        [(ngModel)]="update.proposedContentMarkdown"
+                        rows="8"
+                    ></textarea>
+                </label>
+
+                <div class="button-row">
+                    <button
+                        class="button button-secondary"
+                        type="button"
+                        (click)="saveDraft(update)"
+                    >
+                        Enregistrer
+                    </button>
+                    <button
+                        class="button"
+                        type="button"
+                        (click)="publish(update)"
+                    >
+                        Publier dans les notes
+                    </button>
+                    <button
+                        class="button button-danger"
+                        type="button"
+                        (click)="ignore(update)"
+                    >
+                        Ignorer
+                    </button>
+                </div>
+            </article>
+        } @empty {
+            <p class="empty-state">Aucune proposition GitHub en attente.</p>
+        }
+    </div>
 </section>

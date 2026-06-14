@@ -1,33 +1,35 @@
 {
-  "name": "portfolio",
-  "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
-  "scripts": {
-    "dev": "concurrently -n frontend,backend -c cyan,magenta \"npm run dev --workspace @portfolio/frontend\" \"npm run dev --workspace @portfolio/backend\"",
-    "build": "npm run build --workspace @portfolio/frontend && node scripts/copy-frontend.mjs && npm run build --workspace @portfolio/backend",
-    "start": "npm run start --workspace @portfolio/backend",
-    "lint": "npm run lint --workspace @portfolio/frontend && npm run lint --workspace @portfolio/backend && prettier --check .",
-    "lint:fix": "npm run lint:fix --workspace @portfolio/frontend && npm run lint:fix --workspace @portfolio/backend && prettier --write .",
-    "test": "npm run test --workspace @portfolio/frontend && npm run test --workspace @portfolio/backend",
-    "test:coverage": "npm run test:coverage --workspace @portfolio/frontend && npm run test:coverage --workspace @portfolio/backend",
-    "test:e2e": "npm run test:e2e --workspace @portfolio/backend",
-    "test:ci": "npm run lint && npm run test && npm run test:e2e && npm run build",
-    "db:migrate": "npm run db:migrate --workspace @portfolio/backend",
-    "db:seed": "npm run db:seed --workspace @portfolio/backend"
-  },
-  "devDependencies": {
-    "@eslint/js": "9.39.2",
-    "concurrently": "10.0.3",
-    "eslint": "9.39.2",
-    "globals": "16.5.0",
-    "prettier": "3.8.4",
-    "typescript-eslint": "8.61.0"
-  },
-  "engines": {
-    "node": ">=22.0.0",
-    "npm": ">=10.0.0"
-  }
+    "name": "portfolio",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "apps/*"
+    ],
+    "scripts": {
+        "dev": "concurrently -n frontend,backend -c cyan,magenta \"npm run dev --workspace @portfolio/frontend\" \"npm run dev --workspace @portfolio/backend\"",
+        "build": "npm run build --workspace @portfolio/frontend && node scripts/copy-frontend.mjs && npm run build --workspace @portfolio/backend",
+        "start": "npm run start --workspace @portfolio/backend",
+        "deploy:check": "node scripts/validate-deploy-commit.mjs",
+        "lint": "npm run lint --workspace @portfolio/frontend && npm run lint --workspace @portfolio/backend && prettier --check .",
+        "lint:fix": "npm run lint:fix --workspace @portfolio/frontend && npm run lint:fix --workspace @portfolio/backend && prettier --write .",
+        "test": "npm run test --workspace @portfolio/frontend && npm run test --workspace @portfolio/backend && npm run test:deploy",
+        "test:deploy": "node --test scripts/validate-deploy-commit.test.mjs",
+        "test:coverage": "npm run test:coverage --workspace @portfolio/frontend && npm run test:coverage --workspace @portfolio/backend",
+        "test:e2e": "npm run test:e2e --workspace @portfolio/backend",
+        "test:ci": "npm run lint && npm run test && npm run test:e2e && npm run build",
+        "db:migrate": "npm run db:migrate --workspace @portfolio/backend",
+        "db:seed": "npm run db:seed --workspace @portfolio/backend"
+    },
+    "devDependencies": {
+        "@eslint/js": "9.39.2",
+        "concurrently": "10.0.3",
+        "eslint": "9.39.2",
+        "globals": "16.5.0",
+        "prettier": "3.8.4",
+        "typescript-eslint": "8.61.0"
+    },
+    "engines": {
+        "node": ">=22.0.0",
+        "npm": ">=10.0.0"
+    }
 }
