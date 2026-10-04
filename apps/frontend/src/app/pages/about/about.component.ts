@@ -1,3 +1,4 @@
+import { TrackEventDirective } from '../../core/track-event.directive';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -6,7 +7,7 @@ import { from, map, switchMap } from 'rxjs';
 import { PagesApiService } from '../../core/pages-api.service';
 
 @Component({
-    imports: [AsyncPipe, RouterLink],
+    imports: [TrackEventDirective, AsyncPipe, RouterLink],
     templateUrl: './about.component.html',
     styleUrl: './about.component.scss',
 })

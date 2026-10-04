@@ -4,7 +4,12 @@
         <h1>{{ viewModel.page.title }}</h1>
         <div class="prose" [innerHTML]="viewModel.html"></div>
         <p>
-            <a class="text-link" routerLink="/projets">
+            <a
+                class="text-link"
+                routerLink="/projets"
+                appTrackEvent="navigation-click"
+                [eventProperties]="{ source: 'about', destination: 'projects' }"
+            >
                 {{ viewModel.page.linkLabel }}
             </a>
         </p>

@@ -1,5 +1,7 @@
+import { By } from '@angular/platform-browser';
+import { AnalyticsService } from '../../core/analytics.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { PagesApiService } from '../../core/pages-api.service';
 import { ProjectsApiService } from '../../core/projects-api.service';
@@ -80,5 +82,24 @@ describe('HomeComponent', () => {
         ).toContain('Projets choisis');
         expect(element.textContent).toContain('Projet visible');
         expect(element.textContent).not.toContain('Projet non sélectionné');
+        const analytics = vi.spyOn(TestBed.inject(AnalyticsService), 'track');
+        const navigate = vi
+            .spyOn(TestBed.inject(Router), 'navigateByUrl')
+            .mockResolvedValue(true);
+        fixture.debugElement
+            .query(By.css('.project-card a'))
+            .triggerEventHandler('click', new MouseEvent('click'));
+        expect(analytics).toHaveBeenCalledExactlyOnceWith('project-open', {
+            source: 'home',
+            project: 'projet-visible',
+        });
+        expect(navigate).toHaveBeenCalledOnce();
+        fixture.debugElement
+            .query(By.css('.text-link'))
+            .triggerEventHandler('click', new MouseEvent('click'));
+        expect(analytics).toHaveBeenLastCalledWith('navigation-click', {
+            source: 'home',
+            destination: 'projects',
+        });
     });
 });

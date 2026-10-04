@@ -19,7 +19,14 @@
                     }
                 </p>
                 <h2>
-                    <a [routerLink]="['/projets', project.slug]">
+                    <a
+                        [routerLink]="['/projets', project.slug]"
+                        appTrackEvent="project-open"
+                        [eventProperties]="{
+                            source: 'projects',
+                            project: project.slug,
+                        }"
+                    >
                         {{ project.title }}
                     </a>
                 </h2>

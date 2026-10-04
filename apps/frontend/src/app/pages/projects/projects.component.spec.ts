@@ -1,3 +1,5 @@
+import { By } from '@angular/platform-browser';
+import { AnalyticsService } from '../../core/analytics.service';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -37,6 +39,17 @@ describe('ProjectsComponent', () => {
             'Dernière mise à jour',
         );
         expect(fixture.nativeElement.textContent).toContain('14 juin 2026');
+        const analytics = vi.spyOn(TestBed.inject(AnalyticsService), 'track');
+        fixture.debugElement
+            .query(By.css('h2 a'))
+            .triggerEventHandler(
+                'click',
+                new MouseEvent('click', { ctrlKey: true }),
+            );
+        expect(analytics).toHaveBeenCalledExactlyOnceWith('project-open', {
+            source: 'projects',
+            project: 'portfolio',
+        });
     });
 
     it('shows an empty state when no project is published', async () => {

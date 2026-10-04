@@ -1,3 +1,5 @@
+import { By } from '@angular/platform-browser';
+import { AnalyticsService } from '../../core/analytics.service';
 import { convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
@@ -71,6 +73,24 @@ describe('ProjectDetailComponent', () => {
         expect(fixture.nativeElement.querySelector('img')).not.toBeNull();
         expect(fixture.nativeElement.textContent).toContain('Angular');
         expect(fixture.nativeElement.textContent).toContain('Dépôt');
+        const analytics = vi.spyOn(TestBed.inject(AnalyticsService), 'track');
+        fixture.debugElement
+            .query(By.css('.project-links a'))
+            .triggerEventHandler('click', new MouseEvent('click'));
+        expect(analytics).toHaveBeenCalledExactlyOnceWith(
+            'project-link-click',
+            { project: 'portfolio', type: 'website', label: 'Dépôt' },
+        );
+        fixture.debugElement
+            .query(By.css('.back-link'))
+            .triggerEventHandler(
+                'click',
+                new MouseEvent('click', { ctrlKey: true }),
+            );
+        expect(analytics).toHaveBeenLastCalledWith('navigation-click', {
+            source: 'project-detail',
+            destination: 'projects',
+        });
     });
 
     it('renders a project without optional media or GitHub activity', async () => {

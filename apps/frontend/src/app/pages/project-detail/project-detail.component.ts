@@ -1,3 +1,4 @@
+import { TrackEventDirective } from '../../core/track-event.directive';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -7,7 +8,12 @@ import { ProjectsApiService } from '../../core/projects-api.service';
 import { ProjectActivityComponent } from '../project-activity/project-activity.component';
 
 @Component({
-    imports: [AsyncPipe, ProjectActivityComponent, RouterLink],
+    imports: [
+        TrackEventDirective,
+        AsyncPipe,
+        ProjectActivityComponent,
+        RouterLink,
+    ],
     templateUrl: './project-detail.component.html',
 })
 export class ProjectDetailComponent {

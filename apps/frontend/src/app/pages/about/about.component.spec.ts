@@ -1,3 +1,5 @@
+import { By } from '@angular/platform-browser';
+import { AnalyticsService } from '../../core/analytics.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -48,5 +50,16 @@ describe('AboutComponent', () => {
         expect(element.querySelector('.text-link')?.textContent).toContain(
             'Découvrir les projets',
         );
+        const analytics = vi.spyOn(TestBed.inject(AnalyticsService), 'track');
+        fixture.debugElement
+            .query(By.css('.text-link'))
+            .triggerEventHandler(
+                'click',
+                new MouseEvent('click', { ctrlKey: true }),
+            );
+        expect(analytics).toHaveBeenCalledExactlyOnceWith('navigation-click', {
+            source: 'about',
+            destination: 'projects',
+        });
     });
 });

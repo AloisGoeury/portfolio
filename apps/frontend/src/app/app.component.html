@@ -1,9 +1,33 @@
 <header class="site-header">
-    <a class="wordmark" routerLink="/">Aloïs Goeury</a>
+    <a
+        class="wordmark"
+        routerLink="/"
+        appTrackEvent="navigation-click"
+        [eventProperties]="{ source: 'header', destination: 'home' }"
+        >Aloïs Goeury</a
+    >
     <nav aria-label="Navigation principale">
-        <a routerLink="/projets" routerLinkActive="active">Projets</a>
-        <a routerLink="/notes" routerLinkActive="active">Notes</a>
-        <a routerLink="/a-propos" routerLinkActive="active">À propos</a>
+        <a
+            routerLink="/projets"
+            appTrackEvent="navigation-click"
+            [eventProperties]="{ source: 'header', destination: 'projects' }"
+            routerLinkActive="active"
+            >Projets</a
+        >
+        <a
+            routerLink="/notes"
+            appTrackEvent="navigation-click"
+            [eventProperties]="{ source: 'header', destination: 'notes' }"
+            routerLinkActive="active"
+            >Notes</a
+        >
+        <a
+            routerLink="/a-propos"
+            appTrackEvent="navigation-click"
+            [eventProperties]="{ source: 'header', destination: 'about' }"
+            routerLinkActive="active"
+            >À propos</a
+        >
         @if (isAuthenticated()) {
             <a routerLink="/admin/projects" routerLinkActive="active">Admin</a>
         }
@@ -16,5 +40,10 @@
 
 <footer class="site-footer">
     <p>Conçu et écrit avec attention.</p>
-    <a href="mailto:alois.goeury@hotmail.com">alois.goeury&#64;hotmail.com</a>
+    <a
+        href="mailto:alois.goeury@hotmail.com"
+        appTrackEvent="contact-click"
+        [eventProperties]="{ source: 'footer', method: 'email' }"
+        >alois.goeury&#64;hotmail.com</a
+    >
 </footer>

@@ -152,6 +152,57 @@ npm run dev
 
 Le serveur Angular redirige `/api` vers NestJS grâce à `proxy.conf.json`.
 
+## Analytics Umami
+
+Le script dans `apps/frontend/src/index.html` connecte le portfolio à
+`https://stats.agoeury.com`, avec le Website ID
+`a9a55591-988c-4707-a3de-9a9af82973e0`. Cet identifiant est public, ce n'est
+pas une clé API. Les paramètres de recherche et fragments d'URL sont exclus
+du suivi.
+
+Umami suit automatiquement les pages vues et les changements de route Angular.
+Les interactions suivantes envoient en plus un événement personnalisé :
+
+| Événement            | Interaction                                                   | Propriétés                                        |
+| -------------------- | ------------------------------------------------------------- | ------------------------------------------------- |
+| `navigation-click`   | Navigation publique, lien vers les projets, retour à la liste | `source`, `destination`                           |
+| `project-open`       | Clic sur un projet depuis l'accueil ou la liste               | `source` (`home` ou `projects`), `project` (slug) |
+| `project-link-click` | Clic sur un lien de la section « Liens » d'un projet          | `project` (slug), `type`, `label`                 |
+| `contact-click`      | Clic sur l'adresse email du pied de page                      | `source: footer`, `method: email`                 |
+
+`project-open` mesure un clic, pas toutes les visites d'un projet : un accès
+direct apparaît dans les pages vues. `contact-click` mesure l'ouverture du
+lien email, pas l'envoi effectif d'un message. Le lien du dernier commit et
+les liens inclus dans le Markdown ne sont pas instrumentés.
+
+Les événements personnalisés utilisent `AnalyticsService` et la directive
+`appTrackEvent`. Ils ne transmettent ni adresse email, ni contenu des
+formulaires, ni jeton JWT. Ils sont ignorés depuis les routes `/admin`.
+Les pages vues automatiques du tracker restent actives sur ces routes.
+Si le script est bloqué, absent ou rencontre une erreur, la navigation continue.
+
+### Vérifier et explorer les événements
+
+1. Déployer le frontend, ouvrir le portfolio et cliquer sur un projet, un
+   lien externe puis le lien email.
+2. Dans les outils réseau du navigateur, vérifier les requêtes vers
+   `stats.agoeury.com/api/send` : leur payload contient le nom de l'événement
+   et ses propriétés.
+3. Dans Umami, ouvrir le site correspondant puis **Events**. Utiliser
+   **Properties** pour comparer les projets ou la provenance des clics.
+4. Pour un premier exercice, comparer `project-open` avec
+   `source=home` et `source=projects`, puis observer les
+   `project-link-click` pour chaque projet.
+
+Le script est également chargé en développement local. Pour exclure un
+navigateur de test, exécuter `localStorage.setItem('umami.disabled', '1')`
+dans sa console puis recharger la page. Réactiver le suivi avec
+`localStorage.removeItem('umami.disabled')` puis recharger. Les tests
+unitaires simulent le tracker et n'envoient pas de données à l'instance.
+
+Références : [événements Umami](https://docs.umami.is/docs/track-events) et
+[configuration du tracker](https://docs.umami.is/docs/tracker-configuration).
+
 ## Tests et lint
 
 Lancer le lint TypeScript, Angular et le contrôle Prettier :

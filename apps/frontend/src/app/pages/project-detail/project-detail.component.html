@@ -1,7 +1,16 @@
 @if (viewModel$ | async; as viewModel) {
     <article>
         <header class="page-shell project-header">
-            <a class="back-link" routerLink="/projets">← Tous les projets</a>
+            <a
+                class="back-link"
+                routerLink="/projets"
+                appTrackEvent="navigation-click"
+                [eventProperties]="{
+                    source: 'project-detail',
+                    destination: 'projects',
+                }"
+                >← Tous les projets</a
+            >
             <p class="eyebrow">{{ viewModel.project.category || 'Projet' }}</p>
             <h1>{{ viewModel.project.title }}</h1>
             <p class="project-lead">{{ viewModel.project.summary }}</p>
@@ -39,7 +48,17 @@
                     link of viewModel.project.links;
                     track link.id || link.url
                 ) {
-                    <a [href]="link.url" target="_blank" rel="noreferrer">
+                    <a
+                        [href]="link.url"
+                        appTrackEvent="project-link-click"
+                        [eventProperties]="{
+                            project: viewModel.project.slug,
+                            type: link.type || 'website',
+                            label: link.label,
+                        }"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         {{ link.label }} ↗
                     </a>
                 }

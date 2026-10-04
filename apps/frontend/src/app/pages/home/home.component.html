@@ -3,7 +3,12 @@
         <p class="eyebrow">{{ viewModel.page.eyebrow }}</p>
         <h1>{{ viewModel.page.title }}</h1>
         <p class="hero-copy">{{ viewModel.page.introduction }}</p>
-        <a class="text-link" routerLink="/projets">
+        <a
+            class="text-link"
+            routerLink="/projets"
+            appTrackEvent="navigation-click"
+            [eventProperties]="{ source: 'home', destination: 'projects' }"
+        >
             {{ viewModel.page.linkLabel }}
         </a>
     </section>
@@ -21,7 +26,14 @@
                         {{ project.category || 'Projet personnel' }}
                     </p>
                     <h3>
-                        <a [routerLink]="['/projets', project.slug]">
+                        <a
+                            [routerLink]="['/projets', project.slug]"
+                            appTrackEvent="project-open"
+                            [eventProperties]="{
+                                source: 'home',
+                                project: project.slug,
+                            }"
+                        >
                             {{ project.title }}
                         </a>
                     </h3>
